@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">EcoCity</string>
+    <string name="list_tab_text">List of stations</string>
+    <string name="map_tab_text">Map of stations</string>
+    <string name="details_text">Click for details…</string>
+    <string name="aqi_text">Air Quality Index:\n%1$s points</string>
+    <string name="owner">Owner:\n%1$s</string>
+    <string name="hours_ago">%1$s hours\nago</string>
+    <string name="loading_text">We load new items…</string>
+    <string name="now_text">Now</string>
+    <string name="history_title">History</string>
+    <string name="details_title">Details</string>
+    <string name="last_update_time_text">Last update time:%1$s</string>
+    <string name="error_msg">Unfortunately something went wrong</string>
+</resources>
