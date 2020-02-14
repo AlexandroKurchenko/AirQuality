@@ -9,4 +9,5 @@
     <dimen name="text_min_width">50dp</dimen>
     <dimen name="preview_text_size">14sp</dimen>
     <dimen name="card_elevation">4dp</dimen>
+    <dimen name="min_hours_text_width">80dp</dimen>
 </resources>

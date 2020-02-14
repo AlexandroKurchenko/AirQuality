@@ -33,6 +33,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"
+                android:minWidth="@dimen/min_hours_text_width"
                 android:gravity="center"
                 android:text="@{item.timeAgo != 0 ? @string/hours_ago(item.timeAgo) : @string/now_text}"
                 android:textSize="@dimen/preview_text_size"

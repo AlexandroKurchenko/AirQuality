@@ -13,13 +13,15 @@ import timber.log.Timber
 
 class MainViewModel(private val repository: StationRepositoryImpl) : ViewModel() {
 
-    private val _state = MutableLiveData<StationsState>()
+    private val _state = MutableLiveData<StationsState>().apply {
+        StationsState.Loading
+    }
 
     fun getState(): MutableLiveData<StationsState> = _state
 
     fun takeAction(action: StationAction) {
         when (action) {
-            is StationAction.StationItemsRefresh -> handleRefreshAction()
+            is StationAction.StationItemsRefresh -> if (_state.value != StationsState.Loading) handleRefreshAction()
             is StationAction.StationItemClick -> handleItemClickAction(action.id)
         }
     }
@@ -32,9 +34,12 @@ class MainViewModel(private val repository: StationRepositoryImpl) : ViewModel()
         viewModelScope.launch(Dispatchers.IO) {
             Timber.d("Start fetch data")
             _state.postValue(StationsState.Loading)
-            _state.postValue(StationsState.StationItemsContent(repository.fetchAllStations()))
+            val result = repository.fetchAllStations()
+            if (result.isNotEmpty()) {
+                _state.postValue(StationsState.StationItemsContent(repository.fetchAllStations()))
+            } else {
+                _state.postValue(StationsState.Error)
+            }
         }
     }
-
-
 }

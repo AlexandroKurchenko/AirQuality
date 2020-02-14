@@ -53,27 +53,31 @@ class StationRepositoryImpl(
     }
 
     override suspend fun fetchAllStations(): List<StationItem> {
-        if (isMoreThanRefreshTime(preferences.getLong(FETCH_ALL_STATIONS_SYNC_TIME, 0))) {
+        val dbItems = dataBaseManager.getAllStationItems()
+        return if (dbItems.isNotEmpty() && preferences.getLong(FETCH_ALL_STATIONS_SYNC_TIME, 0) < REFRESH_TIME) {
+            dbItems
+        } else {
             val networkResponse = safeApiCall { api.fetchAllStations().await() }
             processAllStationsFromNetwork(networkResponse)
         }
-        return dataBaseManager.getAllStationItems()
     }
 
-    private fun processAllStationsFromNetwork(networkResponse: NetworkResult<List<StationResponse>>) {
+    private fun processAllStationsFromNetwork(networkResponse: NetworkResult<List<StationResponse>>): List<StationItem> {
         when (networkResponse) {
             is NetworkResult.Success -> {
                 val stationItems = StationItemAggregator.convertStationResponseToInstance(networkResponse.data)
                 dataBaseManager.storeNewStationItems(stationItems)
                 saveAllStationsSyncTime()
+                return stationItems
             }
             is NetworkResult.Error -> Timber.e("fetchAllStations error ${networkResponse.networkError}")
         }
+        return emptyList()
     }
 
     private suspend fun getHistoryForTimePeriod(timeShift: Int, stationId: Int): StationDetails? {
         val dbHistory = dataBaseManager.getAllHistory(stationId, timeShift)
-        return if (dbHistory != null && isMoreThanRefreshTime(dbHistory.timeToSave)) {
+        return if (dbHistory != null && dbHistory.timeToSave.diffTimeInMinutes() < REFRESH_TIME) {
             dbHistory
         } else {
             val networkResponse = safeApiCall { api.fetchStationDataById(stationId, timeShift).await() }
@@ -99,10 +103,6 @@ class StationRepositoryImpl(
             is NetworkResult.Error -> Timber.e("fetchStationDataById=$id, for timeShift=$timeShift, error ${networkResponse.networkError}")
         }
         return null
-    }
-
-    private fun isMoreThanRefreshTime(time: Long): Boolean {
-        return time.diffTimeInMinutes() >= REFRESH_TIME
     }
 
     private fun saveAllStationsSyncTime() {

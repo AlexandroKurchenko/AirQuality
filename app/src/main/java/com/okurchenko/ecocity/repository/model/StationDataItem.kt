@@ -1,9 +1,10 @@
 package com.okurchenko.ecocity.repository.model
 
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 
-@Entity
+@Entity(indices = [Index(value = ["stationId", "hoursAgo"], unique = true)])
 data class StationDetails(
     @PrimaryKey val hoursAgo: Int,
     val timeToSave: Long,

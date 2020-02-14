@@ -17,6 +17,9 @@ private const val VIEW_TYPE_LOADING = 1
 
 class DetailsAdapter(private val actor: HistoryActor) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
+    companion object {
+        private val emptyItem: EmptyItem = EmptyItem()
+    }
 
     private val diffCallback = object : DiffUtil.ItemCallback<BaseItem>() {
         override fun areItemsTheSame(oldItem: BaseItem, newItem: BaseItem): Boolean =
@@ -60,26 +63,24 @@ class DetailsAdapter(private val actor: HistoryActor) : RecyclerView.Adapter<Rec
         val newList = mutableListOf<BaseItem>()
         newList.addAll(listDiffer.currentList)
         newList.addAll(data)
-        val index = newList.indexOf(newList.first { it is EmptyItem })
-        if (index != -1) {
-            newList.removeAt(index)
-        }
+        val index = newList.indexOf(emptyItem)
+        if (index != -1) newList.removeAt(index)
         listDiffer.submitList(newList)
     }
 
     fun showLoading() {
         val newList = mutableListOf<BaseItem>()
         newList.addAll(listDiffer.currentList)
-        newList.add(EmptyItem())
+        newList.add(emptyItem)
         listDiffer.submitList(newList)
     }
 
     fun hideLoading() {
         val newList = mutableListOf<BaseItem>()
         newList.addAll(listDiffer.currentList)
-        val index = newList.indexOf(newList.first { it is EmptyItem })
+        val index = newList.indexOf(emptyItem)
         if (index != -1) {
-            newList.removeAt(newList.indexOf(newList.first { it is EmptyItem }))
+            newList.removeAt(index)
             listDiffer.submitList(newList)
         }
     }

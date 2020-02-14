@@ -4,6 +4,7 @@ import com.okurchenko.ecocity.network.model.Owner
 import com.okurchenko.ecocity.network.model.StationDataResponse
 import com.okurchenko.ecocity.repository.model.StationDetails
 import com.okurchenko.ecocity.utils.round
+import timber.log.Timber
 
 private const val NOT_PROVIDED_VALUE = -1
 
@@ -56,11 +57,15 @@ object DetailsAggregator {
     }
 
     private fun prepareValue(response: StationDataResponse, defName: String): String? {
-        val unit = response.localUnit ?: response.unit
-        if (response.value != null && unit != null && response.cr != null) {
-            val name = response.localName ?: defName
-            val value = response.value.toDouble() * response.cr.toDouble()
-            return "$name: ${round(value, 1)} $unit"
+        try {
+            val unit = response.localUnit ?: response.unit
+            if (response.value != null && unit != null && response.cr != null) {
+                val name = response.localName ?: defName
+                val value = response.value.toDouble() * response.cr.toDouble()
+                return "$name: ${round(value, 1)} $unit"
+            }
+        } catch (ex: NumberFormatException) {
+            Timber.e(ex)
         }
         return null
     }

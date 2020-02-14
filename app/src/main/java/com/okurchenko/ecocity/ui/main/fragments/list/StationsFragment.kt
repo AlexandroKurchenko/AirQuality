@@ -22,9 +22,11 @@ class StationsFragment : Fragment() {
     private lateinit var adapter: StationsAdapter
     private lateinit var loadingView: ProgressBar
     private lateinit var errorView: AppCompatTextView
+    private lateinit var recyclerView: RecyclerView
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_stations_list, container, false)
-        val recyclerView: RecyclerView = view.findViewById(R.id.stationsList)
+        recyclerView = view.findViewById(R.id.stationsList)
         loadingView = view.findViewById(R.id.loadingView)
         errorView = view.findViewById(R.id.errorView)
         val actor = StationsActor(viewModel::takeAction)
@@ -36,26 +38,34 @@ class StationsFragment : Fragment() {
 
     private fun subscribeToViewModelUpdate() {
         viewModel.getState().observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is StationsState.StationItemsContent -> {
-                    Timber.d("Data fetched, size is = ${it.data.size}")
-                    if (::adapter.isInitialized) adapter.submitData(it.data)
-                    loadingView.visibility = View.GONE
-                    errorView.visibility = View.GONE
-                }
-                is StationsState.Error -> {
-                    errorView.visibility = View.VISIBLE
-                    loadingView.visibility = View.GONE
-                    Timber.e("State is error")
-                }
-                is StationsState.Loading -> {
-
-                    Timber.d("State is loading")
-                    loadingView.visibility = View.VISIBLE
-                    errorView.visibility = View.GONE
-                }
+            if (it is StationsState.StationItemsContent && ::adapter.isInitialized) {
+                adapter.submitData(it.data)
             }
+            manageElementsVisibility(it)
         })
+    }
+
+    private fun manageElementsVisibility(stationState: StationsState) {
+        when (stationState) {
+            is StationsState.StationItemsContent -> {
+                Timber.d("Data fetched, size is = ${stationState.data.size}")
+                loadingView.visibility = View.GONE
+                errorView.visibility = View.GONE
+                recyclerView.visibility = View.VISIBLE
+            }
+            is StationsState.Error -> {
+                Timber.e("State is error")
+                errorView.visibility = View.VISIBLE
+                loadingView.visibility = View.GONE
+                recyclerView.visibility = View.GONE
+            }
+            is StationsState.Loading -> {
+                Timber.d("State is loading")
+                recyclerView.visibility = View.GONE
+                loadingView.visibility = View.VISIBLE
+                errorView.visibility = View.GONE
+            }
+        }
     }
 
     companion object {

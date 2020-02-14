@@ -12,7 +12,10 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.okurchenko.ecocity.R
-import com.okurchenko.ecocity.ui.details.*
+import com.okurchenko.ecocity.ui.details.DetailsAdapter
+import com.okurchenko.ecocity.ui.details.HistoryActor
+import com.okurchenko.ecocity.ui.details.HistoryViewModel
+import com.okurchenko.ecocity.ui.details.StationHistoryState
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
