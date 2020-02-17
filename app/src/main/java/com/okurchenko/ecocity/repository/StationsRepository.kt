@@ -14,9 +14,5 @@ interface StationsRepository {
         toTimeShift: Int
     ): List<StationHistoryItem>
 
-    suspend fun fetchStationDetailsById(
-        stationId: Int,
-        fromTimeShift: Int,
-        toTimeShift: Int
-    ): List<StationDetails>
+    suspend fun fetchStationDetailsById(stationId: Int, timeShift: Int): StationDetails?
 }

@@ -5,8 +5,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import com.okurchenko.ecocity.R
-import com.okurchenko.ecocity.ui.main.fragments.list.StationsFragment
 import com.okurchenko.ecocity.ui.main.fragments.map.MapFragment
+import com.okurchenko.ecocity.ui.main.fragments.stations.StationsFragment
 
 private val TAB_TITLES = arrayOf(
     R.string.list_tab_text,

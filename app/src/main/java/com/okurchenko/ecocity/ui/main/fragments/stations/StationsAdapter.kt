@@ -1,4 +1,4 @@
-package com.okurchenko.ecocity.ui.main.fragments.list
+package com.okurchenko.ecocity.ui.main.fragments.stations
 
 
 import android.view.LayoutInflater
@@ -7,10 +7,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.okurchenko.ecocity.BR
 import com.okurchenko.ecocity.databinding.ItemStationsBinding
 import com.okurchenko.ecocity.repository.model.StationItem
-import com.okurchenko.ecocity.ui.main.fragments.StationsActor
+import com.okurchenko.ecocity.ui.main.fragments.StationListActor
 import java.util.*
 
-class StationsAdapter(private val actor: StationsActor) : RecyclerView.Adapter<StationViewHolder>() {
+class StationsAdapter(private val actor: StationListActor) : RecyclerView.Adapter<StationViewHolder>() {
 
     private var stations: List<StationItem> = Collections.emptyList()
 

@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 4,
-    "identityHash": "7c0cac97e5a425d4d4cccc638776d6f3",
+    "identityHash": "34effda9f5ca90a5c5198945e2f0eaeb",
     "entities": [
       {
         "tableName": "StationItem",
@@ -179,14 +179,24 @@
           ],
           "autoGenerate": false
         },
-        "indices": [],
+        "indices": [
+          {
+            "name": "index_StationDetails_stationId_hoursAgo",
+            "unique": true,
+            "columnNames": [
+              "stationId",
+              "hoursAgo"
+            ],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_StationDetails_stationId_hoursAgo` ON `${TABLE_NAME}` (`stationId`, `hoursAgo`)"
+          }
+        ],
         "foreignKeys": []
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '7c0cac97e5a425d4d4cccc638776d6f3')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '34effda9f5ca90a5c5198945e2f0eaeb')"
     ]
   }
 }

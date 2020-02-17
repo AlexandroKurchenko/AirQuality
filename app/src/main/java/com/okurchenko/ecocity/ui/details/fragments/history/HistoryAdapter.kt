@@ -1,4 +1,4 @@
-package com.okurchenko.ecocity.ui.details
+package com.okurchenko.ecocity.ui.details.fragments.history
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -15,7 +15,7 @@ import com.okurchenko.ecocity.repository.model.StationHistoryItem
 private const val VIEW_TYPE_ITEM = 0
 private const val VIEW_TYPE_LOADING = 1
 
-class DetailsAdapter(private val actor: HistoryActor) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class DetailsAdapter(private val actor: HistoryListActor) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
         private val emptyItem: EmptyItem = EmptyItem()

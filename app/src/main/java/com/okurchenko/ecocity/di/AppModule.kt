@@ -8,7 +8,8 @@ import com.okurchenko.ecocity.network.StationApi
 import com.okurchenko.ecocity.repository.StationRepositoryImpl
 import com.okurchenko.ecocity.repository.db.DataBaseManager
 import com.okurchenko.ecocity.repository.db.StationDatabase
-import com.okurchenko.ecocity.ui.details.HistoryViewModel
+import com.okurchenko.ecocity.ui.details.fragments.details.DetailsViewModel
+import com.okurchenko.ecocity.ui.details.fragments.history.HistoryViewModel
 import com.okurchenko.ecocity.ui.main.MainViewModel
 import com.okurchenko.ecocity.utils.LocaleHelper
 import okhttp3.OkHttpClient
@@ -66,5 +67,7 @@ val mainModule = module {
     viewModel { MainViewModel(get(stationRepository)) }
 
     viewModel { HistoryViewModel(get(stationRepository)) }
+
+    viewModel { DetailsViewModel(get(stationRepository)) }
 
 }

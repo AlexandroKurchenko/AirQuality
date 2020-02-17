@@ -4,6 +4,8 @@ interface BaseAction
 
 interface BaseState
 
+interface BaseViewAction
+
 abstract class Reducer<S : BaseState> {
     abstract fun reduce(action: BaseAction, state: S): S
 }

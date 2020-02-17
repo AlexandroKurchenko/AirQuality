@@ -17,7 +17,7 @@ import com.okurchenko.ecocity.utils.getNowTime
 import timber.log.Timber
 
 private const val FETCH_ALL_STATIONS_SYNC_TIME = "FETCH_ALL_STATIONS_SYNC_TIME"
-private const val REFRESH_TIME = 10
+private const val REFRESH_TIME = 30
 
 class StationRepositoryImpl(
     private val api: StationApi,
@@ -40,21 +40,12 @@ class StationRepositoryImpl(
         return periodOfHistory
     }
 
-    override suspend fun fetchStationDetailsById(
-        stationId: Int,
-        fromTimeShift: Int,
-        toTimeShift: Int
-    ): MutableList<StationDetails> {
-        val periodOfHistory = mutableListOf<StationDetails>()
-        for (timeShift in fromTimeShift..toTimeShift) {
-            getHistoryForTimePeriod(timeShift, stationId)?.let { periodOfHistory.add(it) }
-        }
-        return periodOfHistory
-    }
+    override suspend fun fetchStationDetailsById(stationId: Int, timeShift: Int): StationDetails? =
+        getHistoryForTimePeriod(timeShift, stationId)
 
     override suspend fun fetchAllStations(): List<StationItem> {
         val dbItems = dataBaseManager.getAllStationItems()
-        return if (dbItems.isNotEmpty() && preferences.getLong(FETCH_ALL_STATIONS_SYNC_TIME, 0) < REFRESH_TIME) {
+        return if (dbItems.isNotEmpty() && preferences.getLong(FETCH_ALL_STATIONS_SYNC_TIME, 0).diffTimeInMinutes() < REFRESH_TIME) {
             dbItems
         } else {
             val networkResponse = safeApiCall { api.fetchAllStations().await() }
@@ -75,13 +66,13 @@ class StationRepositoryImpl(
         return emptyList()
     }
 
-    private suspend fun getHistoryForTimePeriod(timeShift: Int, stationId: Int): StationDetails? {
-        val dbHistory = dataBaseManager.getAllHistory(stationId, timeShift)
+    private suspend fun getHistoryForTimePeriod(timePeriod: Int, stationId: Int): StationDetails? {
+        val dbHistory = dataBaseManager.getAllHistory(stationId, timePeriod)
         return if (dbHistory != null && dbHistory.timeToSave.diffTimeInMinutes() < REFRESH_TIME) {
             dbHistory
         } else {
-            val networkResponse = safeApiCall { api.fetchStationDataById(stationId, timeShift).await() }
-            processStationDetailsFromNetwork(networkResponse, stationId, timeShift)
+            val networkResponse = safeApiCall { api.fetchStationDataById(stationId, timePeriod).await() }
+            processStationDetailsFromNetwork(networkResponse, stationId, timePeriod)
         }
     }
 

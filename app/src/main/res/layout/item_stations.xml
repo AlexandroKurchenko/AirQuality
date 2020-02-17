@@ -11,7 +11,7 @@
 
         <variable
             name="actor"
-            type="com.okurchenko.ecocity.ui.main.fragments.StationsActor" />
+            type="com.okurchenko.ecocity.ui.main.fragments.StationListActor" />
     </data>
 
     <androidx.cardview.widget.CardView

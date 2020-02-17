@@ -7,11 +7,11 @@ import androidx.lifecycle.Observer
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import com.okurchenko.ecocity.R
-import com.okurchenko.ecocity.ui.details.HistoryActivity
+import com.okurchenko.ecocity.ui.details.HistoryDetailsActivity
 import com.okurchenko.ecocity.ui.main.fragments.Events
 import com.okurchenko.ecocity.ui.main.fragments.SectionsPagerAdapter
-import com.okurchenko.ecocity.ui.main.fragments.StationsActor
-import com.okurchenko.ecocity.ui.main.fragments.StationsState
+import com.okurchenko.ecocity.ui.main.fragments.StationListActor
+import com.okurchenko.ecocity.ui.main.fragments.StationListState
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity() {
@@ -36,13 +36,13 @@ class MainActivity : AppCompatActivity() {
         tabs.setupWithViewPager(viewPager)
     }
 
-    private fun startFetchData() {
-        StationsActor(viewModel::takeAction).refresh()
-    }
+
+
+    private fun startFetchData() = StationListActor(viewModel::takeAction).refresh()
 
     private fun subscribeToViewModelUpdate() {
         viewModel.getState().observe(this, Observer { state ->
-            if (state is StationsState.StationEvent) {
+            if (state is StationListState.StationEvent) {
                 when (state.event) {
                     is Events.OpenHistoryActivity -> openStationDetailsScreen(state.event.id)
                 }
@@ -51,8 +51,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun openStationDetailsScreen(id: Int) {
-        Intent(this@MainActivity, HistoryActivity::class.java)
-            .apply { putExtra(HistoryActivity.DETAILS_ID_EXT, id) }
+        Intent(this@MainActivity, HistoryDetailsActivity::class.java)
+            .apply { putExtra(HistoryDetailsActivity.HISTORY_DETAILS_STATION_ID_EXT, id) }
             .also { startActivity(it) }
     }
 }

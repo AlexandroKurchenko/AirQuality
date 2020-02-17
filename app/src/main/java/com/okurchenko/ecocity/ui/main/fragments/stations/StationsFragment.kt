@@ -1,4 +1,4 @@
-package com.okurchenko.ecocity.ui.main.fragments.list
+package com.okurchenko.ecocity.ui.main.fragments.stations
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,8 +11,8 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.okurchenko.ecocity.R
 import com.okurchenko.ecocity.ui.main.MainViewModel
-import com.okurchenko.ecocity.ui.main.fragments.StationsActor
-import com.okurchenko.ecocity.ui.main.fragments.StationsState
+import com.okurchenko.ecocity.ui.main.fragments.StationListActor
+import com.okurchenko.ecocity.ui.main.fragments.StationListState
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import timber.log.Timber
 
@@ -29,7 +29,7 @@ class StationsFragment : Fragment() {
         recyclerView = view.findViewById(R.id.stationsList)
         loadingView = view.findViewById(R.id.loadingView)
         errorView = view.findViewById(R.id.errorView)
-        val actor = StationsActor(viewModel::takeAction)
+        val actor = StationListActor(viewModel::takeAction)
         adapter = StationsAdapter(actor)
         recyclerView.adapter = adapter
         subscribeToViewModelUpdate()
@@ -38,28 +38,28 @@ class StationsFragment : Fragment() {
 
     private fun subscribeToViewModelUpdate() {
         viewModel.getState().observe(viewLifecycleOwner, Observer {
-            if (it is StationsState.StationItemsContent && ::adapter.isInitialized) {
+            if (it is StationListState.StationItemsContent && ::adapter.isInitialized) {
                 adapter.submitData(it.data)
             }
             manageElementsVisibility(it)
         })
     }
 
-    private fun manageElementsVisibility(stationState: StationsState) {
+    private fun manageElementsVisibility(stationState: StationListState) {
         when (stationState) {
-            is StationsState.StationItemsContent -> {
+            is StationListState.StationItemsContent -> {
                 Timber.d("Data fetched, size is = ${stationState.data.size}")
                 loadingView.visibility = View.GONE
                 errorView.visibility = View.GONE
                 recyclerView.visibility = View.VISIBLE
             }
-            is StationsState.Error -> {
+            is StationListState.Error -> {
                 Timber.e("State is error")
                 errorView.visibility = View.VISIBLE
                 loadingView.visibility = View.GONE
                 recyclerView.visibility = View.GONE
             }
-            is StationsState.Loading -> {
+            is StationListState.Loading -> {
                 Timber.d("State is loading")
                 recyclerView.visibility = View.GONE
                 loadingView.visibility = View.VISIBLE

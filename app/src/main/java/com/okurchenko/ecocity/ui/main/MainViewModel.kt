@@ -1,45 +1,41 @@
 package com.okurchenko.ecocity.ui.main
 
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.okurchenko.ecocity.repository.StationRepositoryImpl
+import com.okurchenko.ecocity.ui.BaseViewAction
+import com.okurchenko.ecocity.ui.BaseViewModel
 import com.okurchenko.ecocity.ui.main.fragments.Events
-import com.okurchenko.ecocity.ui.main.fragments.StationAction
-import com.okurchenko.ecocity.ui.main.fragments.StationsState
+import com.okurchenko.ecocity.ui.main.fragments.StationListState
+import com.okurchenko.ecocity.ui.main.fragments.StationListViewAction
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-class MainViewModel(private val repository: StationRepositoryImpl) : ViewModel() {
+class MainViewModel(private val repository: StationRepositoryImpl) : BaseViewModel<StationListState>() {
 
-    private val _state = MutableLiveData<StationsState>().apply {
-        StationsState.Loading
-    }
-
-    fun getState(): MutableLiveData<StationsState> = _state
-
-    fun takeAction(action: StationAction) {
-        when (action) {
-            is StationAction.StationItemsRefresh -> if (_state.value != StationsState.Loading) handleRefreshAction()
-            is StationAction.StationItemClick -> handleItemClickAction(action.id)
+    override fun takeAction(action: BaseViewAction) {
+        when (val stationsViewAction = action as StationListViewAction) {
+            is StationListViewAction.StationItemsRefresh -> if (viewState.value != StationListState.Loading)
+                handleRefreshAction()
+            is StationListViewAction.StationItemClick -> handleItemClickAction(stationsViewAction.id)
         }
     }
 
     private fun handleItemClickAction(id: Int) {
-        _state.postValue(StationsState.StationEvent(Events.OpenHistoryActivity(id)))
+        viewState.postValue(StationListState.StationEvent(Events.OpenHistoryActivity(id)))
     }
 
     private fun handleRefreshAction() {
         viewModelScope.launch(Dispatchers.IO) {
             Timber.d("Start fetch data")
-            _state.postValue(StationsState.Loading)
+            viewState.postValue(StationListState.Loading)
             val result = repository.fetchAllStations()
             if (result.isNotEmpty()) {
-                _state.postValue(StationsState.StationItemsContent(repository.fetchAllStations()))
+                viewState.postValue(StationListState.StationItemsContent(repository.fetchAllStations()))
             } else {
-                _state.postValue(StationsState.Error)
+                viewState.postValue(StationListState.Error)
             }
         }
     }
+
 }

@@ -9,7 +9,7 @@
 
         <variable
             name="actor"
-            type="com.okurchenko.ecocity.ui.details.HistoryActor" />
+            type="com.okurchenko.ecocity.ui.details.fragments.history.HistoryListActor" />
 
         <variable
             name="item"
@@ -104,10 +104,9 @@
 
             <Button
                 android:id="@+id/detailsBtn"
-                style="@style/Widget.MaterialComponents.Button"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:onClick="@{()->actor.clickItem()}"
+                android:onClick="@{()->actor.clickItem(item.timeAgo)}"
                 android:text="@string/details_text"
                 android:textColor="@color/colorAccent"
                 android:textSize="@dimen/preview_text_size"
