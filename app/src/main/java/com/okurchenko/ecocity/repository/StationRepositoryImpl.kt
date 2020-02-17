@@ -17,7 +17,7 @@ import com.okurchenko.ecocity.utils.getNowTime
 import timber.log.Timber
 
 private const val FETCH_ALL_STATIONS_SYNC_TIME = "FETCH_ALL_STATIONS_SYNC_TIME"
-private const val REFRESH_TIME = 10
+private const val REFRESH_TIME = 30//min
 
 class StationRepositoryImpl(
     private val api: StationApi,
@@ -25,67 +25,59 @@ class StationRepositoryImpl(
     private val preferences: SharedPreferences
 ) : BaseNetworkRepository(), StationsRepository {
 
-    override suspend fun fetchStationHistoryItemsById(
+    override suspend fun fetchHistoryItemsByStationId(
         stationId: Int,
         fromTimeShift: Int,
         toTimeShift: Int
     ): List<StationHistoryItem> {
         val periodOfHistory = mutableListOf<StationHistoryItem>()
         for (timeShift in fromTimeShift..toTimeShift) {
-            getHistoryForTimePeriod(timeShift, stationId)?.let {
-                val historyItem = DetailsToPreviewConverter.convertData(it)
+            getHistoryForTimePeriod(timeShift, stationId)?.let { stationDetails ->
+                val historyItem = DetailsToPreviewConverter.convertData(stationDetails)
                 periodOfHistory.add(historyItem)
             }
         }
         return periodOfHistory
     }
 
-    override suspend fun fetchStationDetailsById(
-        stationId: Int,
-        fromTimeShift: Int,
-        toTimeShift: Int
-    ): MutableList<StationDetails> {
-        val periodOfHistory = mutableListOf<StationDetails>()
-        for (timeShift in fromTimeShift..toTimeShift) {
-            getHistoryForTimePeriod(timeShift, stationId)?.let { periodOfHistory.add(it) }
-        }
-        return periodOfHistory
-    }
+    override suspend fun fetchStationDetailsById(stationId: Int, timeShift: Int): StationDetails? =
+        getHistoryForTimePeriod(timeShift, stationId)
 
     override suspend fun fetchAllStations(): List<StationItem> {
         val dbItems = dataBaseManager.getAllStationItems()
-        return if (dbItems.isNotEmpty() && preferences.getLong(FETCH_ALL_STATIONS_SYNC_TIME, 0) < REFRESH_TIME) {
-            dbItems
+        val lastFetchTime = preferences.getLong(FETCH_ALL_STATIONS_SYNC_TIME, 0)
+        return if (dbItems.isNotEmpty() && lastFetchTime.diffTimeInMinutes() < REFRESH_TIME) {
+            dataBaseManager.sortAllStation(dbItems)
         } else {
-            val networkResponse = safeApiCall { api.fetchAllStations().await() }
-            processAllStationsFromNetwork(networkResponse)
+            val networkResponse = safeApiCall { api.fetchAllStationsAsync().await() }
+            processAllStationsNetworkResponse(networkResponse)
         }
     }
 
-    private fun processAllStationsFromNetwork(networkResponse: NetworkResult<List<StationResponse>>): List<StationItem> {
+    private fun processAllStationsNetworkResponse(networkResponse: NetworkResult<List<StationResponse>>): List<StationItem> {
         when (networkResponse) {
             is NetworkResult.Success -> {
                 val stationItems = StationItemAggregator.convertStationResponseToInstance(networkResponse.data)
                 dataBaseManager.storeNewStationItems(stationItems)
                 saveAllStationsSyncTime()
-                return stationItems
+                return dataBaseManager.sortAllStation(stationItems)
             }
             is NetworkResult.Error -> Timber.e("fetchAllStations error ${networkResponse.networkError}")
         }
         return emptyList()
     }
 
-    private suspend fun getHistoryForTimePeriod(timeShift: Int, stationId: Int): StationDetails? {
-        val dbHistory = dataBaseManager.getAllHistory(stationId, timeShift)
+    private suspend fun getHistoryForTimePeriod(timePeriod: Int, stationId: Int): StationDetails? {
+        val dbHistory = dataBaseManager.getAllHistory(stationId, timePeriod)
         return if (dbHistory != null && dbHistory.timeToSave.diffTimeInMinutes() < REFRESH_TIME) {
             dbHistory
         } else {
-            val networkResponse = safeApiCall { api.fetchStationDataById(stationId, timeShift).await() }
-            processStationDetailsFromNetwork(networkResponse, stationId, timeShift)
+            val networkResponse = safeApiCall { api.fetchStationDataByIdAsync(stationId, timePeriod).await() }
+            processHistoryDetailsNetworkResponse(networkResponse, stationId, timePeriod)
         }
     }
 
-    private fun processStationDetailsFromNetwork(
+    private fun processHistoryDetailsNetworkResponse(
         networkResponse: NetworkResult<List<StationDataResponse>>,
         id: Int,
         timeShift: Int
@@ -105,7 +97,5 @@ class StationRepositoryImpl(
         return null
     }
 
-    private fun saveAllStationsSyncTime() {
-        preferences.edit { putLong(FETCH_ALL_STATIONS_SYNC_TIME, getNowTime()) }
-    }
+    private fun saveAllStationsSyncTime() = preferences.edit { putLong(FETCH_ALL_STATIONS_SYNC_TIME, getNowTime()) }
 }

@@ -9,7 +9,7 @@
 
         <variable
             name="actor"
-            type="com.okurchenko.ecocity.ui.details.HistoryActor" />
+            type="com.okurchenko.ecocity.ui.details.fragments.history.HistoryListActor" />
 
         <variable
             name="item"
@@ -20,23 +20,28 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardElevation="@dimen/card_elevation"
-        app:cardUseCompatPadding="true">
+        app:cardUseCompatPadding="false">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:onClick="@{()->actor.clickItem(item.timeAgo)}">
 
             <TextView
                 android:id="@+id/timeAgo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"
-                android:minWidth="@dimen/min_hours_text_width"
                 android:gravity="center"
                 android:text="@{item.timeAgo != 0 ? @string/hours_ago(item.timeAgo) : @string/now_text}"
+                android:textColor="@android:color/white"
                 android:textSize="@dimen/preview_text_size"
+                app:aqiBackground="@{item.aqi}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -44,50 +49,51 @@
 
             <TextView
                 android:id="@+id/aqi"
+                style="@style/DayNightTextView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:text="@{@string/aqi_text(item.aqi)}"
-                android:textSize="@dimen/preview_text_size"
-                app:layout_constraintEnd_toStartOf="@+id/guideline2"
+                app:aqiIndex="@{item.aqi}"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/timeAgo"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="Air Quality Index : 41 points" />
 
             <TextView
                 android:id="@+id/source2"
+                style="@style/DayNightTextView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:text="@{item.source2}"
-                android:textSize="@dimen/preview_text_size"
                 android:visibility="@{item.isSource2Exist() ? View.VISIBLE : View.GONE}"
-                app:layout_constraintEnd_toStartOf="@+id/guideline2"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/timeAgo"
                 app:layout_constraintTop_toBottomOf="@+id/aqi"
                 tools:text="Temperature: 50 C" />
 
             <TextView
                 android:id="@+id/source3"
+                style="@style/DayNightTextView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:text="@{item.source3}"
-                android:textSize="@dimen/preview_text_size"
                 android:visibility="@{item.isSource3Exist() ? View.VISIBLE : View.GONE}"
-                app:layout_constraintEnd_toStartOf="@+id/guideline2"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/timeAgo"
                 app:layout_constraintTop_toBottomOf="@+id/source2"
                 tools:text="Humidity 80%" />
 
             <TextView
                 android:id="@+id/owner"
+                style="@style/DayNightTextView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -95,36 +101,11 @@
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
                 android:text="@{@string/owner(item.owner)}"
-                android:textSize="@dimen/preview_text_size"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/guideline2"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/timeAgo"
                 app:layout_constraintTop_toBottomOf="@+id/source3"
                 tools:text="PM 2.5 : 9.48 mkg/m3" />
-
-            <Button
-                android:id="@+id/detailsBtn"
-                style="@style/Widget.MaterialComponents.Button"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:onClick="@{()->actor.clickItem()}"
-                android:text="@string/details_text"
-                android:textColor="@color/colorAccent"
-                android:textSize="@dimen/preview_text_size"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                android:padding="8dp"
-                app:layout_constraintStart_toStartOf="@+id/guideline2"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.5" />
-
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideline2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.7" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 </layout>

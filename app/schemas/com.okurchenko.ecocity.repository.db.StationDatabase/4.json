@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 4,
-    "identityHash": "7c0cac97e5a425d4d4cccc638776d6f3",
+    "identityHash": "2d26849a1b51070af0ba114d0660f84b",
     "entities": [
       {
         "tableName": "StationItem",
@@ -50,8 +50,14 @@
       },
       {
         "tableName": "StationDetails",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`hoursAgo` INTEGER NOT NULL, `timeToSave` INTEGER NOT NULL, `stationId` INTEGER NOT NULL, `aqi` INTEGER NOT NULL, `pm25` TEXT, `pm10` TEXT, `temp` TEXT, `humidity` TEXT, `pressure` TEXT, `solarRadiation` TEXT, `yRadiation` TEXT, `o3` TEXT, `nh3` TEXT, `no2` TEXT, `so2` TEXT, `h2s` TEXT, `co` TEXT, `windSpeed` TEXT, `owner` TEXT, `ownerUrl` TEXT, PRIMARY KEY(`hoursAgo`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `hoursAgo` INTEGER NOT NULL, `timeToSave` INTEGER NOT NULL, `stationId` INTEGER NOT NULL, `aqi` INTEGER NOT NULL, `pm25` TEXT, `pm10` TEXT, `temp` TEXT, `humidity` TEXT, `pressure` TEXT, `solarRadiation` TEXT, `yRadiation` TEXT, `o3` TEXT, `nh3` TEXT, `no2` TEXT, `so2` TEXT, `h2s` TEXT, `co` TEXT, `windSpeed` TEXT, `owner` TEXT, `ownerUrl` TEXT)",
         "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
           {
             "fieldPath": "hoursAgo",
             "columnName": "hoursAgo",
@@ -175,18 +181,28 @@
         ],
         "primaryKey": {
           "columnNames": [
-            "hoursAgo"
+            "id"
           ],
-          "autoGenerate": false
+          "autoGenerate": true
         },
-        "indices": [],
+        "indices": [
+          {
+            "name": "index_StationDetails_stationId_hoursAgo",
+            "unique": true,
+            "columnNames": [
+              "stationId",
+              "hoursAgo"
+            ],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_StationDetails_stationId_hoursAgo` ON `${TABLE_NAME}` (`stationId`, `hoursAgo`)"
+          }
+        ],
         "foreignKeys": []
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '7c0cac97e5a425d4d4cccc638776d6f3')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '2d26849a1b51070af0ba114d0660f84b')"
     ]
   }
 }

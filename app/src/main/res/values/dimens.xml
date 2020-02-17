@@ -10,4 +10,7 @@
     <dimen name="preview_text_size">14sp</dimen>
     <dimen name="card_elevation">4dp</dimen>
     <dimen name="min_hours_text_width">80dp</dimen>
+    <dimen name="default_spacing_medium">8dp</dimen>
+    <dimen name="app_bar_height">200dp</dimen>
+    <dimen name="item_width">200dp</dimen>
 </resources>

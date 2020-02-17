@@ -23,7 +23,7 @@ object DetailsAggregator {
                 response.owner != null -> addOwner(builder, response.owner)
             }
         }
-        return if (builder.aqi != NOT_PROVIDED_VALUE) builder.build() else null
+        return builder.build()
     }
 
     private fun addProperResponse(builder: StationDetailsBuilder, response: StationDataResponse) {

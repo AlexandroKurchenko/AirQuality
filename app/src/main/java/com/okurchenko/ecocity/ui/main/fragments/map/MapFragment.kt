@@ -10,12 +10,7 @@ import com.okurchenko.ecocity.ui.main.MainViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class MapFragment : Fragment() {
-    companion object {
-        @JvmStatic
-        fun newInstance(): MapFragment {
-            return MapFragment()
-        }
-    }
+
 
     private val viewModel by sharedViewModel<MainViewModel>()
 
@@ -24,12 +19,6 @@ class MapFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val root = inflater.inflate(R.layout.fragment_map, container, false)
-        subscribeToViewModelUpdate()
         return root
-    }
-
-
-    private fun subscribeToViewModelUpdate() {
-
     }
 }

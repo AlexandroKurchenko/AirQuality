@@ -12,6 +12,7 @@ abstract class StationDatabase : RoomDatabase() {
     abstract fun stationDao(): StationDao
     abstract fun stationDataDao(): StationDetailsDao
 }
+
 object Migrations {
     val MIGRATION_1_2 = object : Migration(1, 2) {
         override fun migrate(database: SupportSQLiteDatabase) {
@@ -39,7 +40,7 @@ object Migrations {
         }
     }
 
-    val MIGRATION_3_4 = object : Migration(3,4) {
+    val MIGRATION_3_4 = object : Migration(3, 4) {
         override fun migrate(database: SupportSQLiteDatabase) {
             database.execSQL(
                 "CREATE TABLE stationdataitem_new (itemId INTEGER NOT NULL, id TEXT , name TEXT, unit TEXT, cr TEXT, value TEXT, localName TEXT, localUnit TEXT, time TEXT NOT NULL, share TEXT, levels TEXT, `offset` TEXT, level INTEGER, `index` INTEGER, PRIMARY KEY(itemId))"

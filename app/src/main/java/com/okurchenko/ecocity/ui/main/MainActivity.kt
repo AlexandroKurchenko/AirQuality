@@ -3,56 +3,38 @@ package com.okurchenko.ecocity.ui.main
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import com.okurchenko.ecocity.R
-import com.okurchenko.ecocity.ui.details.HistoryActivity
-import com.okurchenko.ecocity.ui.main.fragments.Events
-import com.okurchenko.ecocity.ui.main.fragments.SectionsPagerAdapter
-import com.okurchenko.ecocity.ui.main.fragments.StationsActor
-import com.okurchenko.ecocity.ui.main.fragments.StationsState
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import com.okurchenko.ecocity.ui.base.EventProcessor
+import com.okurchenko.ecocity.ui.base.NavigationEvents
+import com.okurchenko.ecocity.ui.details.HistoryDetailsActivity
 
-class MainActivity : AppCompatActivity() {
-
-    private val viewModel by viewModel<MainViewModel>()
+class MainActivity : AppCompatActivity(), EventProcessor {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         initPager()
-        subscribeToViewModelUpdate()
-        startFetchData()
     }
 
     private fun initPager() {
         val viewPager: ViewPager = findViewById(R.id.view_pager)
-        viewPager.adapter = SectionsPagerAdapter(
-            this,
-            supportFragmentManager
-        )
         val tabs: TabLayout = findViewById(R.id.tabs)
+        viewPager.adapter = MainPagerAdapter(this, supportFragmentManager)
         tabs.setupWithViewPager(viewPager)
     }
 
-    private fun startFetchData() {
-        StationsActor(viewModel::takeAction).refresh()
-    }
-
-    private fun subscribeToViewModelUpdate() {
-        viewModel.getState().observe(this, Observer { state ->
-            if (state is StationsState.StationEvent) {
-                when (state.event) {
-                    is Events.OpenHistoryActivity -> openStationDetailsScreen(state.event.id)
-                }
-            }
-        })
+    override fun processEvent(event: NavigationEvents) {
+        if (event is NavigationEvents.OpenHistoryActivity) {
+            openStationDetailsScreen(event.id)
+        }
     }
 
     private fun openStationDetailsScreen(id: Int) {
-        Intent(this@MainActivity, HistoryActivity::class.java)
-            .apply { putExtra(HistoryActivity.DETAILS_ID_EXT, id) }
+        Intent(this@MainActivity, HistoryDetailsActivity::class.java)
+            .apply { putExtra(HistoryDetailsActivity.HISTORY_DETAILS_STATION_ID_EXT, id) }
             .also { startActivity(it) }
+        overridePendingTransition(R.anim.enter_right_to_left, R.anim.exit_right_to_left)
     }
 }

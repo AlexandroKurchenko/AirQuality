@@ -1,46 +1,237 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appBarLayout"
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="actor"
+            type="com.okurchenko.ecocity.ui.details.fragments.history.HistoryListActor" />
+
+        <variable
+            name="item"
+            type="com.okurchenko.ecocity.repository.model.StationDetails" />
+
+    </data>
+
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:cardElevation="@dimen/card_elevation"
+        app:cardUseCompatPadding="true">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolBar"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            app:titleTextColor="@android:color/white" />
-    </com.google.android.material.appbar.AppBarLayout>
+            android:layout_height="wrap_content"
+            android:paddingBottom="18dp">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/detailsList"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layoutManager="LinearLayoutManager"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appBarLayout"
-        tools:context=".ui.details.HistoryActivity"
-        tools:listitem="@layout/item_history"
-        tools:visibility="gone" />
+            <TextView
+                android:id="@+id/timeShift"
+                style="@style/DayNightTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="18dp"
+                android:layout_marginTop="18dp"
+                app:displayTimeShift="@{item.hoursAgo}"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Details for 12:00" />
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/errorView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="@string/error_msg"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appBarLayout" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <TextView
+                android:id="@+id/aqi"
+                style="@style/DayNightTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:textSize="@dimen/preview_text_size"
+                app:aqiIndex="@{item.aqi}"
+                app:layout_constraintStart_toStartOf="@+id/timeShift"
+                app:layout_constraintTop_toBottomOf="@+id/timeShift"
+                tools:text="Air Quality Index : 41 points" />
+
+            <TextView
+                android:id="@+id/pm25"
+                style="@style/DayNightTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@{item.pm25}"
+                app:layout_constraintStart_toStartOf="@+id/timeShift"
+                app:layout_constraintTop_toBottomOf="@+id/aqi"
+                app:visibleIfNotNull="@{item.pm25}"
+                tools:text="pm25" />
+
+            <TextView
+                android:id="@+id/pm10Label"
+                style="@style/DayNightTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@{item.pm10}"
+                app:layout_constraintStart_toStartOf="@+id/timeShift"
+                app:layout_constraintTop_toBottomOf="@+id/pm25"
+                app:visibleIfNotNull="@{item.pm10}"
+                tools:text="pm10" />
+
+            <TextView
+                android:id="@+id/tempLabel"
+                style="@style/DayNightTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@{item.temp}"
+                app:layout_constraintStart_toStartOf="@+id/timeShift"
+                app:layout_constraintTop_toBottomOf="@+id/pm10Label"
+                app:visibleIfNotNull="@{item.temp}"
+                tools:text="Temperature" />
+
+            <TextView
+                android:id="@+id/humidityLabel"
+                style="@style/DayNightTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@{item.humidity}"
+                app:layout_constraintStart_toStartOf="@+id/timeShift"
+                app:layout_constraintTop_toBottomOf="@+id/tempLabel"
+                app:visibleIfNotNull="@{item.humidity}"
+                tools:text="humidity" />
+
+            <TextView
+                android:id="@+id/pressureLabel"
+                style="@style/DayNightTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@{item.pressure}"
+                app:layout_constraintStart_toStartOf="@+id/timeShift"
+                app:layout_constraintTop_toBottomOf="@+id/humidityLabel"
+                app:visibleIfNotNull="@{item.pressure}"
+                tools:text="Pressure" />
+
+            <TextView
+                android:id="@+id/solarRadiationLabel"
+                style="@style/DayNightTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@{item.solarRadiation}"
+                app:layout_constraintStart_toStartOf="@+id/timeShift"
+                app:layout_constraintTop_toBottomOf="@+id/pressureLabel"
+                app:visibleIfNotNull="@{item.solarRadiation}"
+                tools:text="Solar radioation" />
+
+            <TextView
+                android:id="@+id/yRadiationLabel"
+                style="@style/DayNightTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@{item.yRadiation}"
+                app:layout_constraintStart_toStartOf="@+id/timeShift"
+                app:layout_constraintTop_toBottomOf="@+id/solarRadiationLabel"
+                app:visibleIfNotNull="@{item.yRadiation}"
+                tools:text="pm25" />
+
+            <TextView
+                android:id="@+id/o3Label"
+                style="@style/DayNightTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@{item.o3}"
+                app:layout_constraintStart_toStartOf="@+id/timeShift"
+                app:layout_constraintTop_toBottomOf="@+id/yRadiationLabel"
+                app:visibleIfNotNull="@{item.o3}"
+                tools:text="03" />
+
+            <TextView
+                android:id="@+id/nh3Label"
+                style="@style/DayNightTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:text="@{item.nh3}"
+                app:layout_constraintStart_toStartOf="@+id/timeShift"
+                app:layout_constraintTop_toBottomOf="@+id/o3Label"
+                app:visibleIfNotNull="@{item.nh3}"
+                tools:text="NH 3 " />
+
+            <TextView
+                android:id="@+id/noLabel"
+                style="@style/DayNightTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@{item.no2}"
+                app:layout_constraintStart_toStartOf="@+id/timeShift"
+                app:layout_constraintTop_toBottomOf="@+id/nh3Label"
+                app:visibleIfNotNull="@{item.no2}"
+                tools:text="NO" />
+
+            <TextView
+                android:id="@+id/soLabel"
+                style="@style/DayNightTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@{item.so2}"
+                app:layout_constraintStart_toStartOf="@+id/timeShift"
+                app:layout_constraintTop_toBottomOf="@+id/noLabel"
+                app:visibleIfNotNull="@{item.so2}"
+                tools:text="so 2" />
+
+            <TextView
+                android:id="@+id/h2sLabel"
+                style="@style/DayNightTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@{item.h2s}"
+                app:layout_constraintStart_toStartOf="@+id/timeShift"
+                app:layout_constraintTop_toBottomOf="@+id/soLabel"
+                app:visibleIfNotNull="@{item.h2s}"
+                tools:text="H2S Label" />
+
+            <TextView
+                android:id="@+id/coLabel"
+                style="@style/DayNightTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@{item.co}"
+                app:layout_constraintStart_toStartOf="@+id/timeShift"
+                app:layout_constraintTop_toBottomOf="@+id/h2sLabel"
+                app:visibleIfNotNull="@{item.co}"
+                tools:text="coLabel" />
+
+            <TextView
+                android:id="@+id/windSpeedLabel"
+                style="@style/DayNightTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@{item.windSpeed}"
+                app:layout_constraintStart_toStartOf="@+id/timeShift"
+                app:layout_constraintTop_toBottomOf="@+id/coLabel"
+                app:visibleIfNotNull="@{item.windSpeed}"
+                tools:text="windSpeedLabel" />
+
+            <TextView
+                android:id="@+id/ownerLabel"
+                style="@style/DayNightTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@{@string/owner(item.owner)}"
+                app:layout_constraintStart_toStartOf="@+id/timeShift"
+                app:layout_constraintTop_toBottomOf="@+id/windSpeedLabel"
+                app:visibleIfNotNull="@{item.owner}"
+                tools:text="owner" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+</layout>
