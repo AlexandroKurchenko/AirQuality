@@ -6,17 +6,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import androidx.appcompat.widget.AppCompatTextView
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.okurchenko.ecocity.R
+import com.okurchenko.ecocity.ui.base.BaseNavigationFragment
 import com.okurchenko.ecocity.ui.main.MainViewModel
 import com.okurchenko.ecocity.ui.main.fragments.StationListActor
 import com.okurchenko.ecocity.ui.main.fragments.StationListState
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
-class StationsFragment : Fragment() {
+class StationsFragment : BaseNavigationFragment() {
 
     companion object {
         @JvmStatic
@@ -48,37 +48,36 @@ class StationsFragment : Fragment() {
 
     private fun subscribeToViewModelUpdate() {
         viewModel.getState().observe(viewLifecycleOwner, Observer { state ->
-            if (state is StationListState.StationItemsLoaded && ::adapter.isInitialized)
-                adapter.submitData(state.data)
-            manageElementsVisibility(state)
+            if (viewElementsInitialized()) {
+                when (state) {
+                    is StationListState.StationEvent -> eventListener?.processEvent(state.event)
+                    is StationListState.StationItemsLoaded -> handleLoadedState(state)
+                    is StationListState.Error -> handleErrorState()
+                    is StationListState.Loading -> handleLoadingState()
+                }
+            }
         })
     }
 
-    private fun manageElementsVisibility(stationState: StationListState) {
-        if (::loadingView.isInitialized && ::errorView.isInitialized && ::swipeToRefreshLayout.isInitialized) {
-            when (stationState) {
-                is StationListState.StationItemsLoaded -> displayContent()
-                is StationListState.Error -> displayError()
-                is StationListState.Loading -> displayLoading()
-            }
-        }
-    }
-
-    private fun displayContent() {
+    private fun handleLoadedState(state: StationListState.StationItemsLoaded) {
+        if (::adapter.isInitialized) adapter.submitData(state.data)
         loadingView.visibility = View.GONE
         errorView.visibility = View.GONE
         swipeToRefreshLayout.visibility = View.VISIBLE
     }
 
-    private fun displayError() {
+    private fun handleErrorState() {
         errorView.visibility = View.VISIBLE
         loadingView.visibility = View.GONE
         swipeToRefreshLayout.visibility = View.GONE
     }
 
-    private fun displayLoading() {
+    private fun handleLoadingState() {
         swipeToRefreshLayout.visibility = View.GONE
         loadingView.visibility = View.VISIBLE
         errorView.visibility = View.GONE
     }
+
+    private fun viewElementsInitialized(): Boolean =
+        ::loadingView.isInitialized && ::errorView.isInitialized && ::swipeToRefreshLayout.isInitialized
 }

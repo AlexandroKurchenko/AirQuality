@@ -12,6 +12,7 @@ import com.okurchenko.ecocity.R
 import com.okurchenko.ecocity.repository.model.StationHistoryItem
 import com.okurchenko.ecocity.ui.base.BaseHistoryDetailsFragment
 import com.okurchenko.ecocity.ui.details.HistoryDetailsActivity
+import com.okurchenko.ecocity.ui.main.MainActivity2
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
@@ -68,7 +69,7 @@ class HistoryFragment : BaseHistoryDetailsFragment() {
 
     private fun setupToolBar() {
         setHasOptionsMenu(true)
-        (requireActivity() as HistoryDetailsActivity).supportActionBar?.title = getString(R.string.history_title)
+        (requireActivity() as MainActivity2).supportActionBar?.title = getString(R.string.history_title)
     }
 
     private fun subscribeToViewModelUpdate() {
