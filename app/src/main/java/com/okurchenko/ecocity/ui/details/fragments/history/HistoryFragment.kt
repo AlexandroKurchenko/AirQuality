@@ -2,7 +2,6 @@ package com.okurchenko.ecocity.ui.details.fragments.history
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
@@ -10,8 +9,11 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.okurchenko.ecocity.R
-import com.okurchenko.ecocity.ui.details.fragments.BaseHistoryDetailsFragment
+import com.okurchenko.ecocity.repository.model.StationHistoryItem
+import com.okurchenko.ecocity.ui.base.BaseHistoryDetailsFragment
+import com.okurchenko.ecocity.ui.details.HistoryDetailsActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import timber.log.Timber
 
 
 /**
@@ -50,48 +52,57 @@ class HistoryFragment : BaseHistoryDetailsFragment() {
         adapter = DetailsAdapter(actor)
         recyclerView.adapter = adapter
         subscribeToViewModelUpdate()
-        loadItems()
+        if (savedInstanceState == null) {
+            loadItems()
+        }
         return rootView
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == android.R.id.home && ::actor.isInitialized) {
+    override fun onBackActionPressed() {
+        if (::actor.isInitialized) {
             actor.openMain()
-        } else requireActivity().finish()
-        return super.onOptionsItemSelected(item)
+        } else {
+            requireActivity().finish()
+        }
     }
 
     private fun setupToolBar() {
         setHasOptionsMenu(true)
-        requireActivity().actionBar?.title = getString(R.string.history_title)
+        (requireActivity() as HistoryDetailsActivity).supportActionBar?.title = getString(R.string.history_title)
     }
 
     private fun subscribeToViewModelUpdate() {
         viewModel.getState().observe(viewLifecycleOwner, Observer {
             when (it) {
-                is HistoryListState.HistoryItemLoaded -> {
-                    if (::adapter.isInitialized) adapter.submitData(it.items)
-                    recyclerView.addOnScrollListener(scrollListener)
-                    displayErrorView(false)
-                }
-                is HistoryListState.HistoryItemLoading -> {
-                    if (::adapter.isInitialized) {
-                        adapter.showLoading()
-                        recyclerView.smoothScrollToPosition(adapter.itemCount)
-                    }
-                    displayErrorView(false)
-                }
-                is HistoryListState.FailLoading -> {
-                    if (::adapter.isInitialized) {
-                        adapter.hideLoading()
-                        recyclerView.smoothScrollToPosition(adapter.itemCount)
-                    }
-                    displayErrorView(true)
-                    recyclerView.removeOnScrollListener(scrollListener)
-                }
-                is HistoryListState.StationDetailsStateEvent -> eventListener?.processEvent(it.event)
+                is HistoryListState.HistoryItemLoaded -> handleLoadedState(it.items)
+                is HistoryListState.HistoryItemLoading -> handleLoadingState()
+                is HistoryListState.FailLoading -> handleErrorState()
+                is HistoryListState.StationDetailsNavigation -> eventListener?.processEvent(it.event)
             }
         })
+    }
+
+    private fun handleLoadedState(items: List<StationHistoryItem>) {
+        if (::adapter.isInitialized) adapter.submitData(items)
+        recyclerView.addOnScrollListener(scrollListener)
+        displayErrorView(false)
+    }
+
+    private fun handleLoadingState() {
+        if (::adapter.isInitialized) {
+            adapter.showLoading()
+            recyclerView.smoothScrollToPosition(adapter.itemCount)
+        }
+        displayErrorView(false)
+    }
+
+    private fun handleErrorState() {
+        if (::adapter.isInitialized) {
+            adapter.hideLoading()
+            recyclerView.smoothScrollToPosition(adapter.itemCount)
+        }
+        displayErrorView(true)
+        removeScrollListener()
     }
 
     private val scrollListener = object : RecyclerView.OnScrollListener() {
@@ -102,6 +113,8 @@ class HistoryFragment : BaseHistoryDetailsFragment() {
             if (::adapter.isInitialized && linearLayoutManager.findLastCompletelyVisibleItemPosition() == adapter.itemCount - 1) {
                 val plannedTimeToShift = (adapter.itemCount - 1) + MIN_DISPLAY_ITEMS_COUNT
                 if (plannedTimeToShift <= MAX_DISPLAY_ITEMS_COUNT) {
+                    removeScrollListener()
+                    Timber.d("This onScrolled called ${adapter.itemCount} $plannedTimeToShift")
                     loadItems(fromTimeShift = adapter.itemCount, toTimeShift = plannedTimeToShift)
                 }
             }
@@ -123,5 +136,9 @@ class HistoryFragment : BaseHistoryDetailsFragment() {
             recyclerView.visibility = View.VISIBLE
             errorVew.visibility = View.GONE
         }
+    }
+
+    private fun removeScrollListener() {
+        recyclerView.removeOnScrollListener(scrollListener)
     }
 }

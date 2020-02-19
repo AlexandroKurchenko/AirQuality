@@ -2,16 +2,15 @@ package com.okurchenko.ecocity.ui.details.fragments.details
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import com.okurchenko.ecocity.R
 import com.okurchenko.ecocity.databinding.FragmentDetailsBinding
-import com.okurchenko.ecocity.ui.details.fragments.BaseHistoryDetailsFragment
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import com.okurchenko.ecocity.ui.base.BaseHistoryDetailsFragment
+import com.okurchenko.ecocity.ui.details.HistoryDetailsActivity
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 private const val STATION_ID_EXT = "STATION_ID_EXT"
 private const val TIME_SHIFT_EXT = "TIME_SHIFT_EXT"
@@ -28,9 +27,8 @@ class DetailsFragment : BaseHistoryDetailsFragment() {
         }
     }
 
-    private val viewModel by sharedViewModel<DetailsViewModel>()
+    private val viewModel by viewModel<DetailsViewModel>()
     private lateinit var actor: DetailsActor
-    private lateinit var errorVew: TextView
     private lateinit var binding: FragmentDetailsBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -38,20 +36,21 @@ class DetailsFragment : BaseHistoryDetailsFragment() {
         actor = DetailsActor(viewModel::takeAction)
         setupToolBar()
         subscribeToViewModelUpdate()
-        loadItems()
+        if (savedInstanceState == null) {
+            loadItems()
+        }
         return binding.root
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == android.R.id.home && ::actor.isInitialized) {
+    override fun onBackActionPressed() {
+        if (::actor.isInitialized) {
             actor.backToHistory()
         } else requireActivity().finish()
-        return super.onOptionsItemSelected(item)
     }
 
     private fun setupToolBar() {
         setHasOptionsMenu(true)
-        requireActivity().actionBar?.title = getString(R.string.details_text)
+        (requireActivity() as HistoryDetailsActivity).supportActionBar?.title = getString(R.string.details_title)
     }
 
     private fun loadItems() {
@@ -64,9 +63,11 @@ class DetailsFragment : BaseHistoryDetailsFragment() {
         viewModel.getState().observe(viewLifecycleOwner, Observer {
             when (it) {
                 is DetailsState.DetailsItemLoaded -> binding.item = it.item
-                DetailsState.DetailsItemLoading -> {}
-                DetailsState.FailLoading -> {}
-                is DetailsState.StateEvent -> eventListener?.processEvent(it.event)
+                is DetailsState.DetailsItemLoading -> { //TODO maybe will be implemented or removed
+                }
+                is DetailsState.FailLoading -> { //TODO maybe will be implemented or removed
+                }
+                is DetailsState.DetailsNavigation -> eventListener?.processEvent(it.event)
             }
         })
     }

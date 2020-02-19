@@ -24,7 +24,8 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:onClick="@{()->actor.clickItem(item.timeAgo)}">
 
             <TextView
                 android:id="@+id/timeAgo"
@@ -51,7 +52,7 @@
                 android:layout_marginEnd="8dp"
                 android:text="@{@string/aqi_text(item.aqi)}"
                 android:textSize="@dimen/preview_text_size"
-                app:layout_constraintEnd_toStartOf="@+id/guideline2"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/timeAgo"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="Air Quality Index : 41 points" />
@@ -66,7 +67,7 @@
                 android:text="@{item.source2}"
                 android:textSize="@dimen/preview_text_size"
                 android:visibility="@{item.isSource2Exist() ? View.VISIBLE : View.GONE}"
-                app:layout_constraintEnd_toStartOf="@+id/guideline2"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/timeAgo"
                 app:layout_constraintTop_toBottomOf="@+id/aqi"
                 tools:text="Temperature: 50 C" />
@@ -81,7 +82,7 @@
                 android:text="@{item.source3}"
                 android:textSize="@dimen/preview_text_size"
                 android:visibility="@{item.isSource3Exist() ? View.VISIBLE : View.GONE}"
-                app:layout_constraintEnd_toStartOf="@+id/guideline2"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/timeAgo"
                 app:layout_constraintTop_toBottomOf="@+id/source2"
                 tools:text="Humidity 80%" />
@@ -97,33 +98,10 @@
                 android:text="@{@string/owner(item.owner)}"
                 android:textSize="@dimen/preview_text_size"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/guideline2"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/timeAgo"
                 app:layout_constraintTop_toBottomOf="@+id/source3"
                 tools:text="PM 2.5 : 9.48 mkg/m3" />
-
-            <Button
-                android:id="@+id/detailsBtn"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:onClick="@{()->actor.clickItem(item.timeAgo)}"
-                android:text="@string/details_text"
-                android:textColor="@color/colorAccent"
-                android:textSize="@dimen/preview_text_size"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                android:padding="8dp"
-                app:layout_constraintStart_toStartOf="@+id/guideline2"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.5" />
-
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideline2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.7" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 </layout>

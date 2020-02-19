@@ -17,7 +17,7 @@ import com.okurchenko.ecocity.utils.getNowTime
 import timber.log.Timber
 
 private const val FETCH_ALL_STATIONS_SYNC_TIME = "FETCH_ALL_STATIONS_SYNC_TIME"
-private const val REFRESH_TIME = 30
+private const val REFRESH_TIME = 30//min
 
 class StationRepositoryImpl(
     private val api: StationApi,
@@ -45,8 +45,9 @@ class StationRepositoryImpl(
 
     override suspend fun fetchAllStations(): List<StationItem> {
         val dbItems = dataBaseManager.getAllStationItems()
-        return if (dbItems.isNotEmpty() && preferences.getLong(FETCH_ALL_STATIONS_SYNC_TIME, 0).diffTimeInMinutes() < REFRESH_TIME) {
-            dbItems
+        val lastFetchTime = preferences.getLong(FETCH_ALL_STATIONS_SYNC_TIME, 0)
+        return if (dbItems.isNotEmpty() && lastFetchTime.diffTimeInMinutes() < REFRESH_TIME) {
+            dataBaseManager.sortAllStation(dbItems)
         } else {
             val networkResponse = safeApiCall { api.fetchAllStations().await() }
             processAllStationsFromNetwork(networkResponse)
@@ -59,7 +60,7 @@ class StationRepositoryImpl(
                 val stationItems = StationItemAggregator.convertStationResponseToInstance(networkResponse.data)
                 dataBaseManager.storeNewStationItems(stationItems)
                 saveAllStationsSyncTime()
-                return stationItems
+                return dataBaseManager.sortAllStation(stationItems)
             }
             is NetworkResult.Error -> Timber.e("fetchAllStations error ${networkResponse.networkError}")
         }
@@ -96,7 +97,5 @@ class StationRepositoryImpl(
         return null
     }
 
-    private fun saveAllStationsSyncTime() {
-        preferences.edit { putLong(FETCH_ALL_STATIONS_SYNC_TIME, getNowTime()) }
-    }
+    private fun saveAllStationsSyncTime() = preferences.edit { putLong(FETCH_ALL_STATIONS_SYNC_TIME, getNowTime()) }
 }

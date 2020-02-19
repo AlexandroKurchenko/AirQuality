@@ -30,6 +30,27 @@ class DetailsAdapter(private val actor: HistoryListActor) : RecyclerView.Adapter
     }
     private val listDiffer: AsyncListDiffer<BaseItem> = AsyncListDiffer(this, diffCallback)
 
+    fun submitData(data: List<StationHistoryItem>) {
+        listDiffer.submitList(data)
+    }
+
+    fun showLoading() {
+        val newList = mutableListOf<BaseItem>()
+        newList.addAll(listDiffer.currentList)
+        newList.add(emptyItem)
+        listDiffer.submitList(newList)
+    }
+
+    fun hideLoading() {
+        val newList = mutableListOf<BaseItem>()
+        newList.addAll(listDiffer.currentList)
+        val index = newList.indexOf(emptyItem)
+        if (index != -1) {
+            newList.removeAt(index)
+            listDiffer.submitList(newList)
+        }
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder = when (viewType) {
         VIEW_TYPE_ITEM -> StationDetailsViewHolder(
             ItemHistoryBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -58,32 +79,6 @@ class DetailsAdapter(private val actor: HistoryListActor) : RecyclerView.Adapter
         if (listDiffer.currentList[position] is EmptyItem) VIEW_TYPE_LOADING else VIEW_TYPE_ITEM
 
     private fun getItem(position: Int) = listDiffer.currentList[position]
-
-    fun submitData(data: List<StationHistoryItem>) {
-        val newList = mutableListOf<BaseItem>()
-        newList.addAll(listDiffer.currentList)
-        newList.addAll(data)
-        val index = newList.indexOf(emptyItem)
-        if (index != -1) newList.removeAt(index)
-        listDiffer.submitList(newList)
-    }
-
-    fun showLoading() {
-        val newList = mutableListOf<BaseItem>()
-        newList.addAll(listDiffer.currentList)
-        newList.add(emptyItem)
-        listDiffer.submitList(newList)
-    }
-
-    fun hideLoading() {
-        val newList = mutableListOf<BaseItem>()
-        newList.addAll(listDiffer.currentList)
-        val index = newList.indexOf(emptyItem)
-        if (index != -1) {
-            newList.removeAt(index)
-            listDiffer.submitList(newList)
-        }
-    }
 }
 
 class StationDetailsViewHolder(val binding: ItemHistoryBinding) : RecyclerView.ViewHolder(binding.root)

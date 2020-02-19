@@ -3,33 +3,30 @@ package com.okurchenko.ecocity.ui.details.fragments.details
 import androidx.lifecycle.viewModelScope
 import com.okurchenko.ecocity.repository.StationRepositoryImpl
 import com.okurchenko.ecocity.repository.model.StationDetails
-import com.okurchenko.ecocity.ui.BaseStore
-import com.okurchenko.ecocity.ui.BaseViewAction
-import com.okurchenko.ecocity.ui.BaseViewModel
-import com.okurchenko.ecocity.ui.main.fragments.Events
+import com.okurchenko.ecocity.ui.base.BaseStore
+import com.okurchenko.ecocity.ui.base.BaseViewAction
+import com.okurchenko.ecocity.ui.base.BaseViewModel
+import com.okurchenko.ecocity.ui.base.NavigationEvents
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class DetailsViewModel(private val repository: StationRepositoryImpl) : BaseViewModel<DetailsState>() {
 
-    private val store: BaseStore<DetailsState> = BaseStore(DetailsState.DetailsItemLoading, DetailsReducer())
-
-    init {
-        store.subscribe(viewState::postValue)
+    private val store: BaseStore<DetailsState> = BaseStore(DetailsState.Empty, DetailsReducer()).also {
+        it.subscribe(viewState::postValue)
     }
 
     override fun takeAction(action: BaseViewAction) {
         when (val detailsAction = action as DetailsViewAction) {
-            is DetailsViewAction.FetchDetailsItem -> fetchHistoryDetails(
-                detailsAction.stationId,
-                detailsAction.timeShift
-            )
+            is DetailsViewAction.FetchDetailsItem ->
+                fetchHistoryDetails(detailsAction.stationId, detailsAction.timeShift)
             is DetailsViewAction.HistoryClick -> handBackToHistoryClickAction()
         }
     }
 
     private fun handBackToHistoryClickAction() {
-        viewState.postValue(DetailsState.StateEvent(Events.OpenHistory))
+        val event = DetailsState.DetailsNavigation(NavigationEvents.OpenHistoryFragment)
+        processState(event)
     }
 
     private fun fetchHistoryDetails(stationId: Int, timeShift: Int) {

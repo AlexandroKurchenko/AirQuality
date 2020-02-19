@@ -18,7 +18,9 @@ class DataBaseManager(private val db: StationDatabase, private val currentLocale
     fun getAllHistory(stationId: Int, timeShift: Int) =
         db.stationDataDao().getAllHistoryByStationId(stationId, timeShift)
 
-    fun getAllStationItems() = db.stationDao().getAllStations().map { stationItem ->
+    fun getAllStationItems() = db.stationDao().getAllStations()
+
+    internal fun sortAllStation(stations:List<StationItem>) = stations.map { stationItem ->
         stationItem.copy(time = convertDataFormat(stationItem.time, currentLocale))
     }.sortedBy { it.name }
 

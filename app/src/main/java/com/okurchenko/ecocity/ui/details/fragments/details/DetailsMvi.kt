@@ -1,17 +1,14 @@
 package com.okurchenko.ecocity.ui.details.fragments.details
 
 import com.okurchenko.ecocity.repository.model.StationDetails
-import com.okurchenko.ecocity.ui.BaseAction
-import com.okurchenko.ecocity.ui.BaseState
-import com.okurchenko.ecocity.ui.BaseViewAction
-import com.okurchenko.ecocity.ui.Reducer
-import com.okurchenko.ecocity.ui.main.fragments.Events
+import com.okurchenko.ecocity.ui.base.*
 
 sealed class DetailsState : BaseState {
     class DetailsItemLoaded(val item: StationDetails) : DetailsState()
     object DetailsItemLoading : DetailsState()
     object FailLoading : DetailsState()
-    class StateEvent(val event: Events) : DetailsState()
+    class DetailsNavigation(val event: NavigationEvents) : DetailsState()
+    object Empty : DetailsState()
 }
 
 class DetailsReducer : Reducer<DetailsState>() {

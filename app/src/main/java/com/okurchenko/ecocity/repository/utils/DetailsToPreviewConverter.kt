@@ -9,8 +9,8 @@ object DetailsToPreviewConverter {
         var source2: String? = null
         var source3: String? = null
         if (sources.isNotEmpty() && sources.size > 2) {
-            source2 = sources.elementAt(0).replace(": ", ":\n")
-            source3 = sources.elementAt(1).replace(": ", ":\n")
+            source2 = sources.elementAt(0)
+            source3 = sources.elementAt(1)
         }
         return StationHistoryItem(
             timeAgo = details.hoursAgo,

@@ -1,4 +1,4 @@
-package com.okurchenko.ecocity.ui
+package com.okurchenko.ecocity.ui.base
 
 interface BaseAction
 
