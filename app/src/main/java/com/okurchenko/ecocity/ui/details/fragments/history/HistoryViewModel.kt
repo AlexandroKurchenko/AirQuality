@@ -12,7 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-class HistoryViewModel(private val repository: StationRepositoryImpl) : BaseViewModel<HistoryListState>() {
+class HistoryViewModel : BaseViewModel<HistoryListState>() {
 
     private val tempHistoryItems = MutableLiveData<MutableList<StationHistoryItem>>(mutableListOf())
     private val store: BaseStore<HistoryListState> = BaseStore(HistoryListState.Empty, HistoryListReducer())
@@ -31,7 +31,6 @@ class HistoryViewModel(private val repository: StationRepositoryImpl) : BaseView
         if (viewState.value != HistoryListState.HistoryItemLoading) {
             viewModelScope.launch(Dispatchers.IO) {
                 store.dispatch(HistoryListAction.Loading)
-                Timber.d("This fetch  called $id, $fromTimeShift, $toTimeShift")
                 val items = repository.fetchStationHistoryItemsById(id, fromTimeShift, toTimeShift)
                 displayHistoryListResult(items)
             }

@@ -6,40 +6,36 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import androidx.appcompat.widget.AppCompatTextView
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.okurchenko.ecocity.R
+import com.okurchenko.ecocity.repository.model.StationItem
+import com.okurchenko.ecocity.ui.base.BaseNavigationFragment
 import com.okurchenko.ecocity.ui.main.MainViewModel
-import com.okurchenko.ecocity.ui.main.fragments.StationListActor
-import com.okurchenko.ecocity.ui.main.fragments.StationListState
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import com.okurchenko.ecocity.ui.main.StationListActor
+import com.okurchenko.ecocity.ui.main.StationListState
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class StationsFragment : Fragment() {
+class StationsFragment : BaseNavigationFragment() {
 
-    companion object {
-        @JvmStatic
-        fun newInstance() = StationsFragment()
-    }
-
-    private val viewModel by sharedViewModel<MainViewModel>()
+    private val viewModel by viewModel<MainViewModel>()
     private lateinit var adapter: StationsAdapter
     private lateinit var loadingView: ProgressBar
     private lateinit var errorView: AppCompatTextView
     private lateinit var swipeToRefreshLayout: SwipeRefreshLayout
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val actor = StationListActor(viewModel::takeAction)
         val view = inflater.inflate(R.layout.fragment_stations, container, false)
         val recyclerView = view.findViewById<RecyclerView>(R.id.stationsList)
         swipeToRefreshLayout = view.findViewById(R.id.swipeToRefreshLayout)
+        loadingView = view.findViewById(R.id.loadingView)
+        errorView = view.findViewById(R.id.errorView)
+        val actor = StationListActor(viewModel::takeAction)
         swipeToRefreshLayout.setOnRefreshListener {
             actor.refresh()
             swipeToRefreshLayout.isRefreshing = false
         }
-        loadingView = view.findViewById(R.id.loadingView)
-        errorView = view.findViewById(R.id.errorView)
         adapter = StationsAdapter(actor)
         recyclerView.adapter = adapter
         subscribeToViewModelUpdate()
@@ -48,23 +44,19 @@ class StationsFragment : Fragment() {
 
     private fun subscribeToViewModelUpdate() {
         viewModel.getState().observe(viewLifecycleOwner, Observer { state ->
-            if (state is StationListState.StationItemsLoaded && ::adapter.isInitialized)
-                adapter.submitData(state.data)
-            manageElementsVisibility(state)
+            if (isViewElementsInitialized()) {
+                when (state) {
+                    is StationListState.StationItemsLoaded -> displayContent(state.data)
+                    is StationListState.Error -> displayError()
+                    is StationListState.Loading -> displayLoading()
+                    is StationListState.StationEvent -> eventListener?.processEvent(state.event)
+                }
+            }
         })
     }
 
-    private fun manageElementsVisibility(stationState: StationListState) {
-        if (::loadingView.isInitialized && ::errorView.isInitialized && ::swipeToRefreshLayout.isInitialized) {
-            when (stationState) {
-                is StationListState.StationItemsLoaded -> displayContent()
-                is StationListState.Error -> displayError()
-                is StationListState.Loading -> displayLoading()
-            }
-        }
-    }
-
-    private fun displayContent() {
+    private fun displayContent(data: List<StationItem>) {
+        adapter.submitData(data)
         loadingView.visibility = View.GONE
         errorView.visibility = View.GONE
         swipeToRefreshLayout.visibility = View.VISIBLE
@@ -81,4 +73,7 @@ class StationsFragment : Fragment() {
         loadingView.visibility = View.VISIBLE
         errorView.visibility = View.GONE
     }
+
+    private fun isViewElementsInitialized(): Boolean =
+        ::loadingView.isInitialized && ::errorView.isInitialized && ::swipeToRefreshLayout.isInitialized && ::adapter.isInitialized
 }

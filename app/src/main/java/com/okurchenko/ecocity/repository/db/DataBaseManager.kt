@@ -4,6 +4,7 @@ import com.okurchenko.ecocity.repository.model.StationDetails
 import com.okurchenko.ecocity.repository.model.StationItem
 import com.okurchenko.ecocity.utils.convertDataFormat
 import com.okurchenko.ecocity.utils.isNewItemOlder
+import timber.log.Timber
 import java.util.*
 
 class DataBaseManager(private val db: StationDatabase, private val currentLocale: Locale) {

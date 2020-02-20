@@ -13,8 +13,6 @@ import com.okurchenko.ecocity.repository.model.StationHistoryItem
 import com.okurchenko.ecocity.ui.base.BaseHistoryDetailsFragment
 import com.okurchenko.ecocity.ui.details.HistoryDetailsActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import timber.log.Timber
-
 
 /**
  * In this view only can be 48 ite,s in recycler view,
@@ -111,13 +109,17 @@ class HistoryFragment : BaseHistoryDetailsFragment() {
             super.onScrolled(recyclerView, dx, dy)
             val linearLayoutManager = recyclerView.layoutManager as LinearLayoutManager
             if (::adapter.isInitialized && linearLayoutManager.findLastCompletelyVisibleItemPosition() == adapter.itemCount - 1) {
-                val plannedTimeToShift = (adapter.itemCount - 1) + MIN_DISPLAY_ITEMS_COUNT
-                if (plannedTimeToShift <= MAX_DISPLAY_ITEMS_COUNT) {
-                    removeScrollListener()
-                    Timber.d("This onScrolled called ${adapter.itemCount} $plannedTimeToShift")
-                    loadItems(fromTimeShift = adapter.itemCount, toTimeShift = plannedTimeToShift)
-                }
+                processEndListAction()
             }
+        }
+    }
+
+    private fun processEndListAction() {
+        val lastItemTimeShift = adapter.getLastItemTimeShift()
+        val plannedTimeToShift = lastItemTimeShift + MIN_DISPLAY_ITEMS_COUNT
+        if (plannedTimeToShift <= MAX_DISPLAY_ITEMS_COUNT) {
+            removeScrollListener()
+            loadItems(fromTimeShift = lastItemTimeShift + 1, toTimeShift = plannedTimeToShift)
         }
     }
 

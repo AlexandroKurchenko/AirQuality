@@ -10,7 +10,7 @@ import com.okurchenko.ecocity.ui.base.NavigationEvents
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class DetailsViewModel(private val repository: StationRepositoryImpl) : BaseViewModel<DetailsState>() {
+class DetailsViewModel : BaseViewModel<DetailsState>() {
 
     private val store: BaseStore<DetailsState> = BaseStore(DetailsState.Empty, DetailsReducer()).also {
         it.subscribe(viewState::postValue)

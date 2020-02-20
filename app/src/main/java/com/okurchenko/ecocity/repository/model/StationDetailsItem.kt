@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 
 @Entity(indices = [Index(value = ["stationId", "hoursAgo"], unique = true)])
 data class StationDetails(
-    @PrimaryKey val hoursAgo: Int,
+    val hoursAgo: Int,
     val timeToSave: Long,
     val stationId: Int,
     val aqi: Int,
@@ -26,4 +26,7 @@ data class StationDetails(
     val windSpeed: String?,
     val owner: String?,
     val ownerUrl: String?
-)
+) {
+    @PrimaryKey(autoGenerate = true)
+    var id = 0
+}

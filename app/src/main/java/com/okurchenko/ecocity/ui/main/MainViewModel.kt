@@ -7,20 +7,19 @@ import com.okurchenko.ecocity.ui.base.BaseStore
 import com.okurchenko.ecocity.ui.base.BaseViewAction
 import com.okurchenko.ecocity.ui.base.BaseViewModel
 import com.okurchenko.ecocity.ui.base.NavigationEvents
-import com.okurchenko.ecocity.ui.main.fragments.StationListAction
-import com.okurchenko.ecocity.ui.main.fragments.StationListReducer
-import com.okurchenko.ecocity.ui.main.fragments.StationListState
-import com.okurchenko.ecocity.ui.main.fragments.StationListViewAction
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
-class MainViewModel(private val repository: StationRepositoryImpl) : BaseViewModel<StationListState>() {
+class MainViewModel : BaseViewModel<StationListState>() {
 
-    private val store: BaseStore<StationListState> = BaseStore(StationListState.Empty, StationListReducer()).also {
-        it.subscribe(viewState::postValue)
-    }
+    private val store: BaseStore<StationListState> = BaseStore(
+        StationListState.Empty,
+        StationListReducer()
+    )
 
     init {
+        store.subscribe(viewState::postValue)
         handleRefreshAction()
     }
 
@@ -32,13 +31,13 @@ class MainViewModel(private val repository: StationRepositoryImpl) : BaseViewMod
     }
 
     private fun handleItemClickAction(id: Int) {
-        viewState.postValue(StationListState.StationEvent(NavigationEvents.OpenHistoryActivity(id)))
+        processState(StationListState.StationEvent(NavigationEvents.OpenHistoryActivity(id)))
     }
 
     private fun handleRefreshAction() {
         if (viewState.value != StationListState.Loading) {
+            store.dispatch(StationListAction.Loading)
             viewModelScope.launch(Dispatchers.IO) {
-                store.dispatch(StationListAction.Loading)
                 val stationItems = repository.fetchAllStations()
                 displayResults(stationItems)
             }
@@ -52,6 +51,4 @@ class MainViewModel(private val repository: StationRepositoryImpl) : BaseViewMod
             store.dispatch(StationListAction.FailLoading)
         }
     }
-
-
 }

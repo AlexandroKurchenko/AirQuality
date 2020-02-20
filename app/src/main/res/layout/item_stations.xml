@@ -11,19 +11,20 @@
 
         <variable
             name="actor"
-            type="com.okurchenko.ecocity.ui.main.fragments.StationListActor" />
+            type="com.okurchenko.ecocity.ui.main.StationListActor" />
     </data>
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardElevation="@dimen/card_elevation"
+        android:background="?attr/selectableItemBackground"
         app:cardUseCompatPadding="true">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:onClick="@{()->actor.clickItem(station.id)}">
+            android:onClick="@{()->actor.clickItem(station.id)}" >
 
             <ImageView
                 android:id="@+id/icon"

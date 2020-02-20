@@ -1,4 +1,4 @@
-package com.okurchenko.ecocity.ui.main.fragments
+package com.okurchenko.ecocity.ui.main
 
 import android.content.Context
 import androidx.fragment.app.Fragment
@@ -13,13 +13,13 @@ private val TAB_TITLES = arrayOf(
     R.string.map_tab_text
 )
 
-class SectionsPagerAdapter(private val context: Context, fm: FragmentManager) :
-    FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+class MainPagerAdapter(private val context: Context, fragmentManager: FragmentManager) :
+    FragmentPagerAdapter(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
     override fun getItem(position: Int): Fragment {
         return when (position) {
-            0 -> StationsFragment.newInstance()
-            else -> MapFragment.newInstance()
+            0 -> StationsFragment()
+            else -> MapFragment()
         }
     }
 

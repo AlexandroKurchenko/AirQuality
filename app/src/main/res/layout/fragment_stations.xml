@@ -28,8 +28,8 @@
             android:layout_height="match_parent"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            app:layoutManager="LinearLayoutManager"
             android:scrollbars="vertical"
+            app:layoutManager="LinearLayoutManager"
             tools:context=".ui.main.fragments.stations.StationsFragment"
             tools:listitem="@layout/item_stations" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

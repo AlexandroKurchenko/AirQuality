@@ -1,4 +1,4 @@
-package com.okurchenko.ecocity.ui.main.fragments
+package com.okurchenko.ecocity.ui.main
 
 import com.okurchenko.ecocity.repository.model.StationItem
 import com.okurchenko.ecocity.ui.base.*
@@ -12,13 +12,16 @@ sealed class StationListState : BaseState {
 }
 
 class StationListReducer : Reducer<StationListState>() {
-    override fun reduce(action: BaseAction, state: StationListState): StationListState =
-        when (action) {
+    override fun reduce(action: BaseAction, state: StationListState): StationListState {
+        return when (action) {
             is StationListAction.Loading -> StationListState.Loading
             is StationListAction.FailLoading -> StationListState.Error
-            is StationListAction.ItemLoaded -> StationListState.StationItemsLoaded(action.items)
+            is StationListAction.ItemLoaded -> StationListState.StationItemsLoaded(
+                action.items
+            )
             else -> state
         }
+    }
 }
 
 sealed class StationListViewAction : BaseViewAction {
@@ -33,7 +36,12 @@ sealed class StationListAction : BaseAction {
 }
 
 class StationListActor(private val emit: (StationListViewAction) -> Unit) {
-    fun clickItem(id: Int) = emit(StationListViewAction.StationItemClick(id))
+    fun clickItem(id: Int) = emit(
+        StationListViewAction.StationItemClick(
+            id
+        )
+    )
+
     fun refresh() = emit(StationListViewAction.StationItemsRefresh)
 }
 

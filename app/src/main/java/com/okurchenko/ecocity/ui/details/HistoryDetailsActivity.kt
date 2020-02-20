@@ -1,13 +1,17 @@
 package com.okurchenko.ecocity.ui.details
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.PersistableBundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.okurchenko.ecocity.R
+import com.okurchenko.ecocity.ui.base.EventProcessor
 import com.okurchenko.ecocity.ui.base.NavigationEvents
+import com.okurchenko.ecocity.ui.base.OnBackPressed
 import com.okurchenko.ecocity.ui.details.fragments.details.DetailsFragment
 import com.okurchenko.ecocity.ui.details.fragments.history.HistoryFragment
+import com.okurchenko.ecocity.ui.main.MainActivity
 import timber.log.Timber
 
 class HistoryDetailsActivity : AppCompatActivity(), EventProcessor {
@@ -35,7 +39,7 @@ class HistoryDetailsActivity : AppCompatActivity(), EventProcessor {
         }
         when (savedInstanceState?.getString(SAVE_INSTANCE_CURRENT_FRAGMENT_EXT)) {
             CurrentFragment.TAG_HISTORY.tag -> openHistoryFragment()
-            CurrentFragment.TAG_DETAILS.tag -> openDetailsFragment(0)//TODO refactor
+            CurrentFragment.TAG_DETAILS.tag -> openDetailsFragment()
             CurrentFragment.UNKNOWN.tag -> {
                 Timber.e("Could not found current fragment, so finish this activity")
                 finish()
@@ -71,14 +75,20 @@ class HistoryDetailsActivity : AppCompatActivity(), EventProcessor {
                 .commitNow()
         }
 
-    private fun openDetailsFragment(timeShift: Int) =
+    private fun openDetailsFragment(timeShift: Int = 0) =
         getStationId()?.let {
             supportFragmentManager.beginTransaction()
                 .replace(R.id.container, DetailsFragment.newInstance(it, timeShift), CurrentFragment.TAG_DETAILS.tag)
                 .commitNow()
         }
 
-    private fun openMainScreen() = this.finish()
+    private fun openMainScreen() {
+        Intent(this@HistoryDetailsActivity, MainActivity::class.java)
+            .also {
+                startActivity(it)
+                this@HistoryDetailsActivity.finish()
+            }
+    }
 
     private fun getStationId(): Int? {
         val args = intent.extras

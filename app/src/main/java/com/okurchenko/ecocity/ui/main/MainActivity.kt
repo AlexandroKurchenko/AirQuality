@@ -3,45 +3,41 @@ package com.okurchenko.ecocity.ui.main
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import com.okurchenko.ecocity.R
+import com.okurchenko.ecocity.ui.base.EventProcessor
 import com.okurchenko.ecocity.ui.base.NavigationEvents
 import com.okurchenko.ecocity.ui.details.HistoryDetailsActivity
-import com.okurchenko.ecocity.ui.main.fragments.SectionsPagerAdapter
-import com.okurchenko.ecocity.ui.main.fragments.StationListState
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import timber.log.Timber
 
-class MainActivity : AppCompatActivity() {
-
-    private val viewModel by viewModel<MainViewModel>()
+class MainActivity : AppCompatActivity(), EventProcessor {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         initPager()
-        subscribeToViewModelUpdate()
     }
 
     private fun initPager() {
         val viewPager: ViewPager = findViewById(R.id.view_pager)
-        viewPager.adapter = SectionsPagerAdapter(this, supportFragmentManager)
         val tabs: TabLayout = findViewById(R.id.tabs)
+        viewPager.adapter = MainPagerAdapter(this, supportFragmentManager)
         tabs.setupWithViewPager(viewPager)
     }
 
-    private fun subscribeToViewModelUpdate() {
-        viewModel.getState().observe(this, Observer { state ->
-            if (state is StationListState.StationEvent && state.event is NavigationEvents.OpenHistoryActivity) {
-                openStationDetailsScreen(state.event.id)
-            }
-        })
+    override fun processEvent(event: NavigationEvents) {
+        if (event is NavigationEvents.OpenHistoryActivity) {
+            openStationDetailsScreen(event.id)
+        }
     }
 
     private fun openStationDetailsScreen(id: Int) {
         Intent(this@MainActivity, HistoryDetailsActivity::class.java)
             .apply { putExtra(HistoryDetailsActivity.HISTORY_DETAILS_STATION_ID_EXT, id) }
-            .also { startActivity(it) }
+            .also {
+                startActivity(it)
+                this@MainActivity.finish()
+            }
     }
 }

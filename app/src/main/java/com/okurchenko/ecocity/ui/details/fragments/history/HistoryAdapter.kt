@@ -21,14 +21,14 @@ class DetailsAdapter(private val actor: HistoryListActor) : RecyclerView.Adapter
         private val emptyItem: EmptyItem = EmptyItem()
     }
 
-    private val diffCallback = object : DiffUtil.ItemCallback<BaseItem>() {
-        override fun areItemsTheSame(oldItem: BaseItem, newItem: BaseItem): Boolean =
-            (oldItem as? StationHistoryItem)?.timeAgo == (newItem as? StationHistoryItem)?.timeAgo
+    private val listDiffer: AsyncListDiffer<BaseItem> =
+        AsyncListDiffer(this, object : DiffUtil.ItemCallback<BaseItem>() {
+            override fun areItemsTheSame(oldItem: BaseItem, newItem: BaseItem): Boolean =
+                (oldItem as? StationHistoryItem)?.timeAgo == (newItem as? StationHistoryItem)?.timeAgo
 
-        override fun areContentsTheSame(oldItem: BaseItem, newItem: BaseItem): Boolean =
-            (oldItem as? StationHistoryItem) == (newItem as? StationHistoryItem)
-    }
-    private val listDiffer: AsyncListDiffer<BaseItem> = AsyncListDiffer(this, diffCallback)
+            override fun areContentsTheSame(oldItem: BaseItem, newItem: BaseItem): Boolean =
+                (oldItem as? StationHistoryItem) == (newItem as? StationHistoryItem)
+        })
 
     fun submitData(data: List<StationHistoryItem>) {
         listDiffer.submitList(data)
@@ -49,6 +49,15 @@ class DetailsAdapter(private val actor: HistoryListActor) : RecyclerView.Adapter
             newList.removeAt(index)
             listDiffer.submitList(newList)
         }
+    }
+
+    fun getLastItemTimeShift(): Int {
+        var lastItemTimeShift = 0
+        if (listDiffer.currentList.isNotEmpty()) {
+            val lastItem = listDiffer.currentList.lastOrNull()
+            (lastItem as? StationHistoryItem)?.timeAgo?.let { lastItemTimeShift = it }
+        }
+        return lastItemTimeShift
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder = when (viewType) {
