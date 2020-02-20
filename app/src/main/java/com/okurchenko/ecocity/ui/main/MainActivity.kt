@@ -9,7 +9,6 @@ import com.okurchenko.ecocity.R
 import com.okurchenko.ecocity.ui.base.EventProcessor
 import com.okurchenko.ecocity.ui.base.NavigationEvents
 import com.okurchenko.ecocity.ui.details.HistoryDetailsActivity
-import timber.log.Timber
 
 class MainActivity : AppCompatActivity(), EventProcessor {
 

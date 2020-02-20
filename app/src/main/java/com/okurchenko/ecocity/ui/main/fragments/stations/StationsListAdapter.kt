@@ -28,7 +28,6 @@ class StationsAdapter(private val actor: StationListActor) : RecyclerView.Adapte
 
     fun submitData(data: List<StationItem>) {
         stations = data
-        notifyDataSetChanged()
     }
 }
 

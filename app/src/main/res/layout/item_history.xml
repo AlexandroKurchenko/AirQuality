@@ -20,7 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardElevation="@dimen/card_elevation"
-        app:cardUseCompatPadding="true">
+        app:cardUseCompatPadding="false">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -29,11 +29,12 @@
 
             <TextView
                 android:id="@+id/timeAgo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"
+                app:aqiBackground="@{item.aqi}"
                 android:minWidth="@dimen/min_hours_text_width"
                 android:gravity="center"
                 android:text="@{item.timeAgo != 0 ? @string/hours_ago(item.timeAgo) : @string/now_text}"
@@ -50,7 +51,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:text="@{@string/aqi_text(item.aqi)}"
+                app:aqiIndex ="@{item.aqi}"
                 android:textSize="@dimen/preview_text_size"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/timeAgo"

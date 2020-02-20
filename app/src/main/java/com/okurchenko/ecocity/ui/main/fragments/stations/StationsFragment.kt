@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.widget.ProgressBar
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.lifecycle.Observer
@@ -12,6 +13,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.okurchenko.ecocity.R
 import com.okurchenko.ecocity.repository.model.StationItem
 import com.okurchenko.ecocity.ui.base.BaseNavigationFragment
+import com.okurchenko.ecocity.ui.base.ItemOffsetDecoration
 import com.okurchenko.ecocity.ui.main.MainViewModel
 import com.okurchenko.ecocity.ui.main.StationListActor
 import com.okurchenko.ecocity.ui.main.StationListState
@@ -24,10 +26,11 @@ class StationsFragment : BaseNavigationFragment() {
     private lateinit var loadingView: ProgressBar
     private lateinit var errorView: AppCompatTextView
     private lateinit var swipeToRefreshLayout: SwipeRefreshLayout
+    private lateinit var recyclerView: RecyclerView
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_stations, container, false)
-        val recyclerView = view.findViewById<RecyclerView>(R.id.stationsList)
+        recyclerView = view.findViewById(R.id.stationsList)
         swipeToRefreshLayout = view.findViewById(R.id.swipeToRefreshLayout)
         loadingView = view.findViewById(R.id.loadingView)
         errorView = view.findViewById(R.id.errorView)
@@ -38,6 +41,7 @@ class StationsFragment : BaseNavigationFragment() {
         }
         adapter = StationsAdapter(actor)
         recyclerView.adapter = adapter
+        context?.let { recyclerView.addItemDecoration(ItemOffsetDecoration(it)) }
         subscribeToViewModelUpdate()
         return view
     }
@@ -57,6 +61,7 @@ class StationsFragment : BaseNavigationFragment() {
 
     private fun displayContent(data: List<StationItem>) {
         adapter.submitData(data)
+        runLayoutAnimation()
         loadingView.visibility = View.GONE
         errorView.visibility = View.GONE
         swipeToRefreshLayout.visibility = View.VISIBLE
@@ -76,4 +81,11 @@ class StationsFragment : BaseNavigationFragment() {
 
     private fun isViewElementsInitialized(): Boolean =
         ::loadingView.isInitialized && ::errorView.isInitialized && ::swipeToRefreshLayout.isInitialized && ::adapter.isInitialized
+
+    private fun runLayoutAnimation() = recyclerView.apply {
+        layoutAnimation = AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_from_bottom)
+        adapter?.notifyDataSetChanged()
+        scheduleLayoutAnimation()
+
+    }
 }

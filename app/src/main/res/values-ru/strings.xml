@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">EcoCity</string>
+    <string name="list_tab_text">Список станций</string>
+    <string name="map_tab_text">Карта станций</string>
+    <string name="aqi_text">Индекс качества воздуха: %1$s единиц</string>
+    <string name="owner">Владелец: %1$s</string>
+    <string name="hours_ago">%1$s час\nназад</string>
+    <string name="loading_text">Мы грузим новые данные…</string>
+    <string name="now_text">Сейчас</string>
+    <string name="history_title">История</string>
+    <string name="details_title">Детали</string>
+    <string name="last_update_time_text">Последнее время обновления:%1$s</string>
+    <string name="error_msg">Извините, что то пошло не так</string>
+    <string name="details_for_label">Детали для:%1$s</string>
+    <string name="no_aqi_text">Индекс качества воздуха не извесный</string>
+</resources>

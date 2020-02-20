@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.okurchenko.ecocity.R
 import com.okurchenko.ecocity.repository.model.StationHistoryItem
 import com.okurchenko.ecocity.ui.base.BaseHistoryDetailsFragment
+import com.okurchenko.ecocity.ui.base.ItemOffsetDecoration
 import com.okurchenko.ecocity.ui.details.HistoryDetailsActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -49,6 +50,7 @@ class HistoryFragment : BaseHistoryDetailsFragment() {
         errorVew = rootView.findViewById(R.id.errorView)
         adapter = DetailsAdapter(actor)
         recyclerView.adapter = adapter
+        context?.let { recyclerView.addItemDecoration(ItemOffsetDecoration(it)) }
         subscribeToViewModelUpdate()
         if (savedInstanceState == null) {
             loadItems()

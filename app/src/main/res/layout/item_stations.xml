@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         app:cardElevation="@dimen/card_elevation"
         android:background="?attr/selectableItemBackground"
-        app:cardUseCompatPadding="true">
+        app:cardUseCompatPadding="false">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -30,10 +30,10 @@
                 android:id="@+id/icon"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
-                android:src="@drawable/ic_location_city_black_24dp"
+                android:src="@drawable/ic_weather_station"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
