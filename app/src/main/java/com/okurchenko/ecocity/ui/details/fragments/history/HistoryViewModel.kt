@@ -2,7 +2,6 @@ package com.okurchenko.ecocity.ui.details.fragments.history
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.okurchenko.ecocity.repository.StationRepositoryImpl
 import com.okurchenko.ecocity.repository.model.StationHistoryItem
 import com.okurchenko.ecocity.ui.base.BaseStore
 import com.okurchenko.ecocity.ui.base.BaseViewAction
@@ -10,11 +9,10 @@ import com.okurchenko.ecocity.ui.base.BaseViewModel
 import com.okurchenko.ecocity.ui.base.NavigationEvents
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 class HistoryViewModel : BaseViewModel<HistoryListState>() {
 
-    private val tempHistoryItems = MutableLiveData<MutableList<StationHistoryItem>>(mutableListOf())
+    private val tempHistoryItems = MutableLiveData<MutableSet<StationHistoryItem>>(mutableSetOf())
     private val store: BaseStore<HistoryListState> = BaseStore(HistoryListState.Empty, HistoryListReducer())
         .also { it.subscribe(viewState::postValue) }
 

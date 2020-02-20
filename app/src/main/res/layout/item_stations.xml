@@ -17,14 +17,16 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardElevation="@dimen/card_elevation"
-        android:background="?attr/selectableItemBackground"
+
         app:cardUseCompatPadding="false">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:onClick="@{()->actor.clickItem(station.id)}" >
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?android:attr/selectableItemBackground"
+            android:onClick="@{()->actor.clickItem(station.id)}">
 
             <ImageView
                 android:id="@+id/icon"

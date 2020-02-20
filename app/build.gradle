@@ -43,7 +43,6 @@ android {
 }
 
 dependencies {
-    def glide_version = '4.11.0'
     def retrofit_version = '2.7.1'
     def lifecycle = '2.2.0'
     def room_version = '2.2.3'
@@ -61,11 +60,8 @@ dependencies {
     implementation "androidx.room:room-runtime:$room_version"
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
+    implementation 'com.google.android.material:material:1.1.0'
     kapt "androidx.room:room-compiler:$room_version"
-    implementation 'io.reactivex.rxjava2:rxjava:2.2.9'
-    implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
-    implementation "com.github.bumptech.glide:glide:$glide_version"
-    kapt "com.github.bumptech.glide:compiler:$glide_version"
     implementation "org.koin:koin-android:$koin_version"
     implementation "org.koin:koin-androidx-scope:$koin_version"
     implementation "org.koin:koin-androidx-viewmodel:$koin_version"
@@ -75,7 +71,6 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:4.3.1'
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'com.google.android.gms:play-services-location:17.0.0'
-    implementation 'io.supercharge:shimmerlayout:2.1.0'
     implementation 'com.jakewharton.timber:timber:4.7.1'
     testImplementation 'junit:junit:4.13'
     testImplementation 'org.mockito:mockito-core:3.0.0'
