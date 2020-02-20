@@ -4,7 +4,6 @@ import com.okurchenko.ecocity.repository.model.StationDetails
 import com.okurchenko.ecocity.repository.model.StationItem
 import com.okurchenko.ecocity.utils.convertDataFormat
 import com.okurchenko.ecocity.utils.isNewItemOlder
-import timber.log.Timber
 import java.util.*
 
 class DataBaseManager(private val db: StationDatabase, private val currentLocale: Locale) {
@@ -21,7 +20,7 @@ class DataBaseManager(private val db: StationDatabase, private val currentLocale
 
     fun getAllStationItems() = db.stationDao().getAllStations()
 
-    internal fun sortAllStation(stations:List<StationItem>) = stations.map { stationItem ->
+    internal fun sortAllStation(stations: List<StationItem>) = stations.map { stationItem ->
         stationItem.copy(time = convertDataFormat(stationItem.time, currentLocale))
     }.sortedBy { it.name }
 

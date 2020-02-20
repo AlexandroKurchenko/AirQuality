@@ -2,7 +2,6 @@ package com.okurchenko.ecocity.ui.details
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.PersistableBundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.okurchenko.ecocity.R
@@ -12,7 +11,7 @@ import com.okurchenko.ecocity.ui.base.OnBackPressed
 import com.okurchenko.ecocity.ui.details.fragments.details.DetailsFragment
 import com.okurchenko.ecocity.ui.details.fragments.history.HistoryFragment
 import com.okurchenko.ecocity.ui.main.MainActivity
-import timber.log.Timber
+import kotlinx.android.synthetic.main.detail_list.*
 
 class HistoryDetailsActivity : AppCompatActivity(), EventProcessor {
 
@@ -20,38 +19,21 @@ class HistoryDetailsActivity : AppCompatActivity(), EventProcessor {
         const val HISTORY_DETAILS_STATION_ID_EXT = "HISTORY_DETAILS_STATION_ID_EXT"
     }
 
+    private var tabletMode: Boolean = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_history)
+        setContentView(R.layout.activity_history_detail)
         val toolbar: Toolbar = findViewById(R.id.toolBar)
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        if (fragmentDetails != null) {
+            tabletMode = true
+        }
         if (savedInstanceState == null) {
             openHistoryFragment()
         }
-    }
-
-    override fun onRestoreInstanceState(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
-        super.onRestoreInstanceState(savedInstanceState, persistentState)
-        savedInstanceState?.getInt(SAVE_INSTANCE_STATION_ID_EXT)?.let {
-            intent.extras?.putInt(HISTORY_DETAILS_STATION_ID_EXT, it)
-        }
-        when (savedInstanceState?.getString(SAVE_INSTANCE_CURRENT_FRAGMENT_EXT)) {
-            CurrentFragment.TAG_HISTORY.tag -> openHistoryFragment()
-            CurrentFragment.TAG_DETAILS.tag -> openDetailsFragment()
-            CurrentFragment.UNKNOWN.tag -> {
-                Timber.e("Could not found current fragment, so finish this activity")
-                finish()
-            }
-        }
-    }
-
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        getStationId()?.let { outState.putInt(SAVE_INSTANCE_STATION_ID_EXT, it) }
-        outState.putString(SAVE_INSTANCE_CURRENT_FRAGMENT_EXT, findCurrentFragment().tag)
     }
 
     override fun onBackPressed() {
@@ -71,15 +53,18 @@ class HistoryDetailsActivity : AppCompatActivity(), EventProcessor {
     private fun openHistoryFragment() =
         getStationId()?.let {
             supportFragmentManager.beginTransaction()
-                .replace(R.id.container, HistoryFragment.newInstance(it), CurrentFragment.TAG_HISTORY.tag)
+                .setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
+                .replace(R.id.fragmentContainer, HistoryFragment.newInstance(it), HistoryFragment::class.java.name)
                 .commitNow()
         }
 
     private fun openDetailsFragment(timeShift: Int = 0) =
         getStationId()?.let {
+            val container = if (tabletMode) R.id.fragmentDetails else R.id.fragmentContainer
             supportFragmentManager.beginTransaction()
-                .replace(R.id.container, DetailsFragment.newInstance(it, timeShift), CurrentFragment.TAG_DETAILS.tag)
-                .commitNow()
+                .setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
+                .replace(container, DetailsFragment.newInstance(it, timeShift), DetailsFragment::class.java.name)
+                .commitNow()//TODO need to fix this
         }
 
     private fun openMainScreen() {
@@ -97,19 +82,4 @@ class HistoryDetailsActivity : AppCompatActivity(), EventProcessor {
         }
         return null
     }
-
-    private fun findCurrentFragment(): CurrentFragment {
-        var currentFragmentTag: CurrentFragment? = null
-        CurrentFragment.values().forEach {
-            supportFragmentManager.findFragmentByTag(it.tag).let { _ -> currentFragmentTag = it }
-        }
-        return currentFragmentTag ?: CurrentFragment.UNKNOWN
-    }
-
-    private enum class CurrentFragment(val tag: String) {
-        TAG_HISTORY("TAG_HISTORY"), TAG_DETAILS("TAG_DETAILS"), UNKNOWN("-1")
-    }
 }
-
-private const val SAVE_INSTANCE_CURRENT_FRAGMENT_EXT = "SAVE_INSTANCE_CURRENT_FRAGMENT_EXT"
-private const val SAVE_INSTANCE_STATION_ID_EXT = "SAVE_INSTANCE_STATION_ID_EXT"

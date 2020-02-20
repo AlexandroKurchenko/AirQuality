@@ -1,7 +1,6 @@
 package com.okurchenko.ecocity.ui.details.fragments.details
 
 import androidx.lifecycle.viewModelScope
-import com.okurchenko.ecocity.repository.StationRepositoryImpl
 import com.okurchenko.ecocity.repository.model.StationDetails
 import com.okurchenko.ecocity.ui.base.BaseStore
 import com.okurchenko.ecocity.ui.base.BaseViewAction

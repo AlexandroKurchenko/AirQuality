@@ -1,7 +1,6 @@
 package com.okurchenko.ecocity.ui.main
 
 import androidx.lifecycle.viewModelScope
-import com.okurchenko.ecocity.repository.StationRepositoryImpl
 import com.okurchenko.ecocity.repository.model.StationItem
 import com.okurchenko.ecocity.ui.base.BaseStore
 import com.okurchenko.ecocity.ui.base.BaseViewAction
@@ -9,7 +8,6 @@ import com.okurchenko.ecocity.ui.base.BaseViewModel
 import com.okurchenko.ecocity.ui.base.NavigationEvents
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 class MainViewModel : BaseViewModel<StationListState>() {
 

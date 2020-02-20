@@ -27,7 +27,7 @@ object StationItemAggregator {
         val nameBuilder = StringBuilder()
         val locationName = response.localName
         if (checkItem(locationName)) {
-            nameBuilder.append("$locationName".replace(" ",""))
+            nameBuilder.append("$locationName".replace(" ", ""))
         }
         val cityName = response.cityName
         if (checkItem(cityName)) {

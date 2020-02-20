@@ -14,6 +14,6 @@ interface StationApi {
     @GET("public.json")
     fun fetchStationDataById(
         @Query("id") id: Int,
-        @Query("timeShift") timeShift:Int
+        @Query("timeShift") timeShift: Int
     ): Deferred<Response<List<StationDataResponse>>>
 }

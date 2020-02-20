@@ -25,14 +25,14 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="16dp">
+            android:paddingBottom="18dp">
 
             <TextView
                 android:id="@+id/timeShift"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginStart="18dp"
+                android:layout_marginTop="18dp"
                 android:text="@{@string/details_for_label(item.hoursAgo)}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -43,7 +43,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="@{@string/aqi_text(item.aqi)}"
+                app:aqiIndex ="@{item.aqi}"
                 android:textSize="@dimen/preview_text_size"
                 app:layout_constraintStart_toStartOf="@+id/timeShift"
                 app:layout_constraintTop_toBottomOf="@+id/timeShift"
@@ -53,8 +53,8 @@
                 android:id="@+id/lastUpdate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginTop="18dp"
+                android:layout_marginEnd="18dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="Last update was at: 12:66" />
@@ -92,7 +92,7 @@
                 app:layout_constraintStart_toStartOf="@+id/timeShift"
                 app:layout_constraintTop_toBottomOf="@+id/pm10Label"
                 app:visibleIfNotNull="@{item.temp}"
-                tools:layout_editor_absoluteX="16dp"
+                tools:layout_editor_absoluteX="18dp"
                 tools:text="Temperature" />
 
             <TextView
@@ -123,7 +123,7 @@
                 android:id="@+id/solarRadiationLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
+                android:layout_marginTop="8dp"
                 android:text="@{item.solarRadiation}"
                 app:layout_constraintStart_toStartOf="@+id/timeShift"
                 app:layout_constraintTop_toBottomOf="@+id/pressureLabel"
@@ -231,8 +231,8 @@
                 android:id="@+id/ownerLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:text="@{item.owner}"
+                android:layout_marginTop="8dp"
+                android:text="@{@string/owner(item.owner)}"
                 app:layout_constraintStart_toStartOf="@+id/timeShift"
                 app:layout_constraintTop_toBottomOf="@+id/windSpeedLabel"
                 app:visibleIfNotNull="@{item.owner}"

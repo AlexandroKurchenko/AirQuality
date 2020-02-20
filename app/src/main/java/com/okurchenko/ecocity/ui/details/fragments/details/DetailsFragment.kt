@@ -50,7 +50,7 @@ class DetailsFragment : BaseHistoryDetailsFragment() {
 
     private fun setupToolBar() {
         setHasOptionsMenu(true)
-        (requireActivity() as HistoryDetailsActivity).supportActionBar?.title = getString(R.string.details_title)
+        (requireActivity() as? HistoryDetailsActivity)?.supportActionBar?.title = getString(R.string.details_title)
     }
 
     private fun loadItems() {
