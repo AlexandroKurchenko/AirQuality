@@ -53,10 +53,10 @@ class StationsFragment : BaseNavigationFragment() {
                     is StationListState.StationItemsLoaded -> displayContent(state.data)
                     is StationListState.Error -> displayError()
                     is StationListState.Loading -> displayLoading()
-                    is StationListState.StationEvent -> eventListener?.processEvent(state.event)
                 }
             }
         })
+        viewModel.getNavigationEvents().observe(viewLifecycleOwner, Observer { eventListener?.processEvent(it) })
     }
 
     private fun displayContent(data: List<StationItem>) {
@@ -86,6 +86,5 @@ class StationsFragment : BaseNavigationFragment() {
         layoutAnimation = AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_from_bottom)
         adapter?.notifyDataSetChanged()
         scheduleLayoutAnimation()
-
     }
 }

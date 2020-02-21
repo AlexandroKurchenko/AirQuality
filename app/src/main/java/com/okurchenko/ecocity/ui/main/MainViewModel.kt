@@ -24,12 +24,9 @@ class MainViewModel : BaseViewModel<StationListState>() {
     override fun takeAction(action: BaseViewAction) {
         when (val stationsViewAction = action as StationListViewAction) {
             is StationListViewAction.StationItemsRefresh -> handleRefreshAction()
-            is StationListViewAction.StationItemClick -> handleItemClickAction(stationsViewAction.id)
+            is StationListViewAction.StationItemClick ->
+                processNavigationEvent(NavigationEvents.OpenHistoryActivity(stationsViewAction.id))
         }
-    }
-
-    private fun handleItemClickAction(id: Int) {
-        processState(StationListState.StationEvent(NavigationEvents.OpenHistoryActivity(id)))
     }
 
     private fun handleRefreshAction() {

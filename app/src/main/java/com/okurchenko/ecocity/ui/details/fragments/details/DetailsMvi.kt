@@ -7,7 +7,6 @@ sealed class DetailsState : BaseState {
     class DetailsItemLoaded(val item: StationDetails) : DetailsState()
     object DetailsItemLoading : DetailsState()
     object FailLoading : DetailsState()
-    class DetailsNavigation(val event: NavigationEvents) : DetailsState()
     object Empty : DetailsState()
 }
 

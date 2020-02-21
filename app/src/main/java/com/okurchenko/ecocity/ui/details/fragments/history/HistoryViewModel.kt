@@ -20,8 +20,9 @@ class HistoryViewModel : BaseViewModel<HistoryListState>() {
         when (val historyAction = action as HistoryListViewAction) {
             is HistoryListViewAction.FetchHistoryList ->
                 fetchHistoryList(historyAction.id, historyAction.fromTimeShift, historyAction.toTimeShift)
-            is HistoryListViewAction.DetailsClick -> handleDetailsClickAction(historyAction.timeShift)
-            is HistoryListViewAction.OpenMain -> handleOpenMainAction()
+            is HistoryListViewAction.DetailsClick ->
+                processNavigationEvent(NavigationEvents.OpenDetailsFragment(historyAction.timeShift))
+            is HistoryListViewAction.OpenMain -> processNavigationEvent(NavigationEvents.OpenMainActivity)
         }
     }
 
@@ -47,15 +48,5 @@ class HistoryViewModel : BaseViewModel<HistoryListState>() {
         val allItems = tempHistoryItems.value
         allItems?.addAll(items)
         return allItems?.toList()
-    }
-
-    private fun handleDetailsClickAction(timeShift: Int) {
-        val event = HistoryListState.StationDetailsNavigation(NavigationEvents.OpenDetailsFragment(timeShift))
-        processState(event)
-    }
-
-    private fun handleOpenMainAction() {
-        val event = HistoryListState.StationDetailsNavigation(NavigationEvents.OpenMainActivity)
-        processState(event)
     }
 }

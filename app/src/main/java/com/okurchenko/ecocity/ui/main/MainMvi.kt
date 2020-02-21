@@ -7,7 +7,6 @@ sealed class StationListState : BaseState {
     object Loading : StationListState()
     object Error : StationListState()
     class StationItemsLoaded(val data: List<StationItem>) : StationListState()
-    class StationEvent(val event: NavigationEvents) : StationListState()
     object Empty : StationListState()
 }
 

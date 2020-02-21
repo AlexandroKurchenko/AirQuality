@@ -25,9 +25,9 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="?android:attr/selectableItemBackground"
             android:clickable="true"
             android:focusable="true"
-            android:background="?android:attr/selectableItemBackground"
             android:onClick="@{()->actor.clickItem(item.timeAgo)}">
 
             <TextView
@@ -37,11 +37,11 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"
-                app:aqiBackground="@{item.aqi}"
                 android:gravity="center"
-                android:textColor="@android:color/white"
                 android:text="@{item.timeAgo != 0 ? @string/hours_ago(item.timeAgo) : @string/now_text}"
+                android:textColor="@android:color/white"
                 android:textSize="@dimen/preview_text_size"
+                app:aqiBackground="@{item.aqi}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -49,13 +49,13 @@
 
             <TextView
                 android:id="@+id/aqi"
+                style="@style/DayNightTextView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                app:aqiIndex ="@{item.aqi}"
-                android:textSize="@dimen/preview_text_size"
+                app:aqiIndex="@{item.aqi}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/timeAgo"
                 app:layout_constraintTop_toTopOf="parent"
@@ -63,13 +63,13 @@
 
             <TextView
                 android:id="@+id/source2"
+                style="@style/DayNightTextView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:text="@{item.source2}"
-                android:textSize="@dimen/preview_text_size"
                 android:visibility="@{item.isSource2Exist() ? View.VISIBLE : View.GONE}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/timeAgo"
@@ -78,13 +78,13 @@
 
             <TextView
                 android:id="@+id/source3"
+                style="@style/DayNightTextView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:text="@{item.source3}"
-                android:textSize="@dimen/preview_text_size"
                 android:visibility="@{item.isSource3Exist() ? View.VISIBLE : View.GONE}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/timeAgo"
@@ -93,6 +93,7 @@
 
             <TextView
                 android:id="@+id/owner"
+                style="@style/DayNightTextView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -100,7 +101,6 @@
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
                 android:text="@{@string/owner(item.owner)}"
-                android:textSize="@dimen/preview_text_size"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/timeAgo"

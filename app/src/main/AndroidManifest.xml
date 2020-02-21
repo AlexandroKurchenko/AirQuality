@@ -31,10 +31,6 @@
         <activity
             android:name=".ui.details.HistoryDetailsActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-
-        <activity
-            android:name=".ui.details.HistoryDetailsActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

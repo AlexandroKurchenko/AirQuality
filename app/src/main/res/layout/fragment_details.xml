@@ -14,6 +14,7 @@
         <variable
             name="item"
             type="com.okurchenko.ecocity.repository.model.StationDetails" />
+
     </data>
 
     <androidx.cardview.widget.CardView
@@ -29,38 +30,31 @@
 
             <TextView
                 android:id="@+id/timeShift"
+                style="@style/DayNightTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="18dp"
                 android:layout_marginTop="18dp"
-                android:text="@{@string/details_for_label(item.hoursAgo)}"
+                app:displayTimeShift="@{item.hoursAgo}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="Details for 12:00" />
 
             <TextView
                 android:id="@+id/aqi"
+                style="@style/DayNightTextView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                app:aqiIndex ="@{item.aqi}"
                 android:textSize="@dimen/preview_text_size"
+                app:aqiIndex="@{item.aqi}"
                 app:layout_constraintStart_toStartOf="@+id/timeShift"
                 app:layout_constraintTop_toBottomOf="@+id/timeShift"
                 tools:text="Air Quality Index : 41 points" />
 
             <TextView
-                android:id="@+id/lastUpdate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="18dp"
-                android:layout_marginEnd="18dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="Last update was at: 12:66" />
-
-            <TextView
                 android:id="@+id/pm25"
+                style="@style/DayNightTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -68,11 +62,11 @@
                 app:layout_constraintStart_toStartOf="@+id/timeShift"
                 app:layout_constraintTop_toBottomOf="@+id/aqi"
                 app:visibleIfNotNull="@{item.pm25}"
-                tools:layout_editor_absoluteX="23dp"
                 tools:text="pm25" />
 
             <TextView
                 android:id="@+id/pm10Label"
+                style="@style/DayNightTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -80,11 +74,11 @@
                 app:layout_constraintStart_toStartOf="@+id/timeShift"
                 app:layout_constraintTop_toBottomOf="@+id/pm25"
                 app:visibleIfNotNull="@{item.pm10}"
-                tools:layout_editor_absoluteX="21dp"
                 tools:text="pm10" />
 
             <TextView
                 android:id="@+id/tempLabel"
+                style="@style/DayNightTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -92,11 +86,11 @@
                 app:layout_constraintStart_toStartOf="@+id/timeShift"
                 app:layout_constraintTop_toBottomOf="@+id/pm10Label"
                 app:visibleIfNotNull="@{item.temp}"
-                tools:layout_editor_absoluteX="18dp"
                 tools:text="Temperature" />
 
             <TextView
                 android:id="@+id/humidityLabel"
+                style="@style/DayNightTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -104,11 +98,11 @@
                 app:layout_constraintStart_toStartOf="@+id/timeShift"
                 app:layout_constraintTop_toBottomOf="@+id/tempLabel"
                 app:visibleIfNotNull="@{item.humidity}"
-                tools:layout_editor_absoluteX="20dp"
                 tools:text="humidity" />
 
             <TextView
                 android:id="@+id/pressureLabel"
+                style="@style/DayNightTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -116,11 +110,11 @@
                 app:layout_constraintStart_toStartOf="@+id/timeShift"
                 app:layout_constraintTop_toBottomOf="@+id/humidityLabel"
                 app:visibleIfNotNull="@{item.pressure}"
-                tools:layout_editor_absoluteX="15dp"
                 tools:text="Pressure" />
 
             <TextView
                 android:id="@+id/solarRadiationLabel"
+                style="@style/DayNightTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -128,11 +122,11 @@
                 app:layout_constraintStart_toStartOf="@+id/timeShift"
                 app:layout_constraintTop_toBottomOf="@+id/pressureLabel"
                 app:visibleIfNotNull="@{item.solarRadiation}"
-                tools:layout_editor_absoluteX="8dp"
                 tools:text="Solar radioation" />
 
             <TextView
                 android:id="@+id/yRadiationLabel"
+                style="@style/DayNightTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -140,11 +134,11 @@
                 app:layout_constraintStart_toStartOf="@+id/timeShift"
                 app:layout_constraintTop_toBottomOf="@+id/solarRadiationLabel"
                 app:visibleIfNotNull="@{item.yRadiation}"
-                tools:layout_editor_absoluteX="10dp"
                 tools:text="pm25" />
 
             <TextView
                 android:id="@+id/o3Label"
+                style="@style/DayNightTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -152,11 +146,11 @@
                 app:layout_constraintStart_toStartOf="@+id/timeShift"
                 app:layout_constraintTop_toBottomOf="@+id/yRadiationLabel"
                 app:visibleIfNotNull="@{item.o3}"
-                tools:layout_editor_absoluteX="17dp"
                 tools:text="03" />
 
             <TextView
                 android:id="@+id/nh3Label"
+                style="@style/DayNightTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
@@ -164,11 +158,11 @@
                 app:layout_constraintStart_toStartOf="@+id/timeShift"
                 app:layout_constraintTop_toBottomOf="@+id/o3Label"
                 app:visibleIfNotNull="@{item.nh3}"
-                tools:layout_editor_absoluteX="13dp"
                 tools:text="NH 3 " />
 
             <TextView
                 android:id="@+id/noLabel"
+                style="@style/DayNightTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -176,11 +170,11 @@
                 app:layout_constraintStart_toStartOf="@+id/timeShift"
                 app:layout_constraintTop_toBottomOf="@+id/nh3Label"
                 app:visibleIfNotNull="@{item.no2}"
-                tools:layout_editor_absoluteX="14dp"
                 tools:text="NO" />
 
             <TextView
                 android:id="@+id/soLabel"
+                style="@style/DayNightTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -188,11 +182,11 @@
                 app:layout_constraintStart_toStartOf="@+id/timeShift"
                 app:layout_constraintTop_toBottomOf="@+id/noLabel"
                 app:visibleIfNotNull="@{item.so2}"
-                tools:layout_editor_absoluteX="12dp"
                 tools:text="so 2" />
 
             <TextView
                 android:id="@+id/h2sLabel"
+                style="@style/DayNightTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -200,11 +194,11 @@
                 app:layout_constraintStart_toStartOf="@+id/timeShift"
                 app:layout_constraintTop_toBottomOf="@+id/soLabel"
                 app:visibleIfNotNull="@{item.h2s}"
-                tools:layout_editor_absoluteX="14dp"
                 tools:text="H2S Label" />
 
             <TextView
                 android:id="@+id/coLabel"
+                style="@style/DayNightTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -212,11 +206,11 @@
                 app:layout_constraintStart_toStartOf="@+id/timeShift"
                 app:layout_constraintTop_toBottomOf="@+id/h2sLabel"
                 app:visibleIfNotNull="@{item.co}"
-                tools:layout_editor_absoluteX="18dp"
                 tools:text="coLabel" />
 
             <TextView
                 android:id="@+id/windSpeedLabel"
+                style="@style/DayNightTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -224,11 +218,11 @@
                 app:layout_constraintStart_toStartOf="@+id/timeShift"
                 app:layout_constraintTop_toBottomOf="@+id/coLabel"
                 app:visibleIfNotNull="@{item.windSpeed}"
-                tools:layout_editor_absoluteX="18dp"
                 tools:text="windSpeedLabel" />
 
             <TextView
                 android:id="@+id/ownerLabel"
+                style="@style/DayNightTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -236,7 +230,6 @@
                 app:layout_constraintStart_toStartOf="@+id/timeShift"
                 app:layout_constraintTop_toBottomOf="@+id/windSpeedLabel"
                 app:visibleIfNotNull="@{item.owner}"
-                tools:layout_editor_absoluteX="25dp"
                 tools:text="owner" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

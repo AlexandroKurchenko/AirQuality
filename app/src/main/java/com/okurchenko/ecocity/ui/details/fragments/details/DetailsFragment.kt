@@ -63,12 +63,10 @@ class DetailsFragment : BaseHistoryDetailsFragment() {
         viewModel.getState().observe(viewLifecycleOwner, Observer {
             when (it) {
                 is DetailsState.DetailsItemLoaded -> binding.item = it.item
-                is DetailsState.DetailsItemLoading -> { //TODO maybe will be implemented or removed
-                }
-                is DetailsState.FailLoading -> { //TODO maybe will be implemented or removed
-                }
-                is DetailsState.DetailsNavigation -> eventListener?.processEvent(it.event)
             }
+        })
+        viewModel.getNavigationEvents().observe(viewLifecycleOwner, Observer {
+            eventListener?.processEvent(it)
         })
     }
 

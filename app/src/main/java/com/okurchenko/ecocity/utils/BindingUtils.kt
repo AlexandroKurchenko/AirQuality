@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import com.okurchenko.ecocity.R
+import kotlin.time.ExperimentalTime
 
 @BindingAdapter("visibleIfNotNull")
 fun visibleIfNotNull(view: TextView, source: String?) {
@@ -15,7 +16,7 @@ fun visibleIfNotNull(view: TextView, source: String?) {
 fun setAqiBackground(view: TextView, source: Int) {
     val drawable = view.context.resources.getDrawable(R.drawable.circle)
     when (getAqiIndex(source)) {
-        -1 -> drawable.setTint(view.context.resources.getColor(android.R.color.transparent))
+        -1 -> drawable.setTint(view.context.resources.getColor(android.R.color.darker_gray))
         0 -> drawable.setTint(view.context.resources.getColor(R.color.aqi_good))
         1 -> drawable.setTint(view.context.resources.getColor(R.color.aqi_moderate))
         2 -> drawable.setTint(view.context.resources.getColor(R.color.aqi_unhealthy_sensitive_groups))
@@ -34,5 +35,16 @@ fun setAqiIndex(view: TextView, source: Int) {
     } else {
         view.text = view.context.getString(R.string.aqi_text, source)
     }
+}
 
+@ExperimentalTime
+@BindingAdapter("displayTimeShift")
+fun setTimeShift(view: TextView, source: Int) {
+    val helper = LocaleHelper(view.context)
+    val timeToDisplay = getTimeFromTimeShift(source, helper.getLocale())
+    if (timeToDisplay.isNotBlank()) {
+        view.text = view.context.getString(R.string.details_for_label, timeToDisplay)
+    } else {
+        view.visibility = View.GONE
+    }
 }

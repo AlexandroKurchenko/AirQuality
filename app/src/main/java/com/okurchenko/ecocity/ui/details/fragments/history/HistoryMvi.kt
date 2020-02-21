@@ -7,7 +7,6 @@ sealed class HistoryListState : BaseState {
     class HistoryItemLoaded(val items: List<StationHistoryItem>) : HistoryListState()
     object HistoryItemLoading : HistoryListState()
     object FailLoading : HistoryListState()
-    class StationDetailsNavigation(val event: NavigationEvents) : HistoryListState()
     object Empty : HistoryListState()
 }
 

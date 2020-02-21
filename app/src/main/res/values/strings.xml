@@ -11,6 +11,6 @@
     <string name="details_title">Details</string>
     <string name="last_update_time_text">Last update time:%1$s</string>
     <string name="error_msg">Unfortunately something went wrong</string>
-    <string name="details_for_label">Details for:%1$s</string>
+    <string name="details_for_label">Details for: %1$s</string>
     <string name="no_aqi_text">Air Quality Index not provided</string>
 </resources>

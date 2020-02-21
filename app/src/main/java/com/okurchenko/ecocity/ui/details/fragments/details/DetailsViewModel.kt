@@ -19,13 +19,8 @@ class DetailsViewModel : BaseViewModel<DetailsState>() {
         when (val detailsAction = action as DetailsViewAction) {
             is DetailsViewAction.FetchDetailsItem ->
                 fetchHistoryDetails(detailsAction.stationId, detailsAction.timeShift)
-            is DetailsViewAction.HistoryClick -> handBackToHistoryClickAction()
+            is DetailsViewAction.HistoryClick -> processNavigationEvent(NavigationEvents.OpenHistoryFragment)
         }
-    }
-
-    private fun handBackToHistoryClickAction() {
-        val event = DetailsState.DetailsNavigation(NavigationEvents.OpenHistoryFragment)
-        processState(event)
     }
 
     private fun fetchHistoryDetails(stationId: Int, timeShift: Int) {

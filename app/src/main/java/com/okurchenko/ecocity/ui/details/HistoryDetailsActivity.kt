@@ -61,10 +61,10 @@ class HistoryDetailsActivity : AppCompatActivity(), EventProcessor {
     private fun openDetailsFragment(timeShift: Int = 0) =
         getStationId()?.let {
             val container = if (tabletMode) R.id.fragmentDetails else R.id.fragmentContainer
-            supportFragmentManager.beginTransaction()
-                .setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
-                .replace(container, DetailsFragment.newInstance(it, timeShift), DetailsFragment::class.java.name)
-                .commitNow()//TODO need to fix this
+                supportFragmentManager.beginTransaction()
+                    .setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
+                    .replace(container, DetailsFragment.newInstance(it, timeShift), DetailsFragment::class.java.name)
+                    .commitNow()
         }
 
     private fun openMainScreen() {

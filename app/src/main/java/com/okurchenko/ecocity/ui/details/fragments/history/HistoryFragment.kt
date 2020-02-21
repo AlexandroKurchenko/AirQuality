@@ -14,6 +14,7 @@ import com.okurchenko.ecocity.ui.base.BaseHistoryDetailsFragment
 import com.okurchenko.ecocity.ui.base.ItemOffsetDecoration
 import com.okurchenko.ecocity.ui.details.HistoryDetailsActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import timber.log.Timber
 
 /**
  * In this view only can be 48 ite,s in recycler view,
@@ -77,8 +78,12 @@ class HistoryFragment : BaseHistoryDetailsFragment() {
                 is HistoryListState.HistoryItemLoaded -> handleLoadedState(it.items)
                 is HistoryListState.HistoryItemLoading -> handleLoadingState()
                 is HistoryListState.FailLoading -> handleErrorState()
-                is HistoryListState.StationDetailsNavigation -> eventListener?.processEvent(it.event)
+//                is HistoryListState.StationDetailsNavigation -> {eventListener?.processEvent(it.event)
+//                    Timber.d("getState navigation data ${it.event}")}
             }
+        })
+        viewModel.getNavigationEvents().observe(viewLifecycleOwner, Observer {
+            eventListener?.processEvent(it)
         })
     }
 

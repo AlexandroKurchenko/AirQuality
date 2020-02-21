@@ -2,8 +2,7 @@ package com.okurchenko.ecocity.ui.base
 
 import android.view.MenuItem
 
-abstract class BaseHistoryDetailsFragment : BaseNavigationFragment(),
-    OnBackPressed {
+abstract class BaseHistoryDetailsFragment : BaseNavigationFragment(), OnBackPressed {
 
     abstract fun onBackActionPressed()
 

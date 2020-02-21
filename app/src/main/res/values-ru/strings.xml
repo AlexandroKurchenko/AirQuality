@@ -12,6 +12,6 @@
     <string name="details_title">Детали</string>
     <string name="last_update_time_text">Последнее время обновления:%1$s</string>
     <string name="error_msg">Извините, что то пошло не так</string>
-    <string name="details_for_label">Детали для:%1$s</string>
+    <string name="details_for_label">Детали для: %1$s</string>
     <string name="no_aqi_text">Индекс качества воздуха не извесный</string>
 </resources>

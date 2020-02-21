@@ -12,6 +12,6 @@
     <string name="details_title">Деталi</string>
     <string name="last_update_time_text">Останнiй час оновлення:%1$s</string>
     <string name="error_msg">Вибачте, щось пiшло не за планом</string>
-    <string name="details_for_label">Деталi для:%1$s</string>
+    <string name="details_for_label">Деталi для: %1$s</string>
     <string name="no_aqi_text">Iндекс якостi повiтря не визначенний</string>
 </resources>
