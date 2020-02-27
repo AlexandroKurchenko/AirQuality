@@ -17,7 +17,6 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
         app:cardUseCompatPadding="false">
 
         <androidx.constraintlayout.widget.ConstraintLayout

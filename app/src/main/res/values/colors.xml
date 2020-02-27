@@ -10,4 +10,7 @@
     <color name="aqi_unhealthy">#FF9A01</color>
     <color name="aqi_very_unhealthy">#FE1400</color>
     <color name="aqi_hazardous">#942716</color>
+    <color name="ic_launcher_background">#008577</color>
+    <color name="map_info_transparent">#50FFFFFF</color>
+    <color name="map_info_dark_transparent">#50000000</color>
 </resources>

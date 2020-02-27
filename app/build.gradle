@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
-apply plugin: "androidx.navigation.safeargs.kotlin"
+//apply plugin: "androidx.navigation.safeargs.kotlin"
 
 android {
     compileSdkVersion 29
@@ -22,8 +22,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility 1.8
-        targetCompatibility 1.8
+        sourceCompatibility "1.8"
+        targetCompatibility "1.8"
     }
     kotlinOptions {
         jvmTarget = "1.8"
@@ -37,9 +37,9 @@ android {
     dataBinding {
         enabled = true
     }
-    kapt {
-        generateStubs = true
-    }
+//    kapt {
+//        generateStubs = true
+//    }
 }
 
 dependencies {
@@ -47,6 +47,7 @@ dependencies {
     def lifecycle = '2.2.0'
     def room_version = '2.2.4'
     def koin_version = "2.0.1"
+    def gmc_play_servies = "17.0.0"
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'androidx.appcompat:appcompat:1.1.0'
@@ -60,6 +61,7 @@ dependencies {
     implementation "androidx.room:room-runtime:$room_version"
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
+    implementation "androidx.viewpager2:viewpager2:1.0.0"
     implementation 'com.google.android.material:material:1.1.0'
     kapt "androidx.room:room-compiler:$room_version"
     implementation "org.koin:koin-android:$koin_version"
@@ -71,7 +73,9 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:4.4.0'
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation "com.github.hadilq.liveevent:liveevent:1.2.0"
-//    implementation 'com.google.android.gms:play-services-location:17.0.0'
+    implementation("io.coil-kt:coil:0.9.5")
+    implementation "com.google.android.gms:play-services-location:$gmc_play_servies"
+    implementation "com.google.android.gms:play-services-maps:$gmc_play_servies"
     implementation 'com.jakewharton.timber:timber:4.7.1'
 //    testImplementation 'junit:junit:4.13'
 //    testImplementation 'org.mockito:mockito-core:3.0.0'

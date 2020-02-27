@@ -3,14 +3,22 @@ package com.okurchenko.ecocity.ui.main
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.viewpager.widget.ViewPager
+import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
+import com.google.android.material.tabs.TabLayoutMediator.TabConfigurationStrategy
 import com.okurchenko.ecocity.R
 import com.okurchenko.ecocity.ui.base.EventProcessor
 import com.okurchenko.ecocity.ui.base.NavigationEvents
 import com.okurchenko.ecocity.ui.details.HistoryDetailsActivity
 
+
 class MainActivity : AppCompatActivity(), EventProcessor {
+
+    private val tabTitles = arrayOf(R.string.map_tab_text, R.string.list_tab_text)
+    private lateinit var viewPager2: ViewPager2
+
+    fun getViewPager2(): ViewPager2? = viewPager2//TODO make it more elegant
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -19,10 +27,13 @@ class MainActivity : AppCompatActivity(), EventProcessor {
     }
 
     private fun initPager() {
-        val viewPager: ViewPager = findViewById(R.id.view_pager)
-        val tabs: TabLayout = findViewById(R.id.tabs)
-        viewPager.adapter = MainPagerAdapter(this, supportFragmentManager)
-        tabs.setupWithViewPager(viewPager)
+        viewPager2 = findViewById<ViewPager2>(R.id.view_pager).apply {
+            adapter = ViewPagerAdapter(this@MainActivity, tabTitles)
+        }
+        val tabLayout: TabLayout = findViewById(R.id.tabs)
+        TabLayoutMediator(tabLayout, viewPager2, TabConfigurationStrategy { tab: TabLayout.Tab, position: Int ->
+            tab.setText(tabTitles[position])
+        }).attach()
     }
 
     override fun processEvent(event: NavigationEvents) {

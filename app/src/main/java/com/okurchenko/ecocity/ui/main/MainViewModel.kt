@@ -9,12 +9,9 @@ import com.okurchenko.ecocity.ui.base.NavigationEvents
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class MainViewModel : BaseViewModel<StationListState>() {
+open class MainViewModel : BaseViewModel<StationListState>() {
 
-    private val store: BaseStore<StationListState> = BaseStore(
-        StationListState.Empty,
-        StationListReducer()
-    )
+    private val store: BaseStore<StationListState> = BaseStore(StationListState.Empty, StationListReducer())
 
     init {
         store.subscribe(viewState::postValue)

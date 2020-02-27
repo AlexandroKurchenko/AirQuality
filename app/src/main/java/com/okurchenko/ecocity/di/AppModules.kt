@@ -7,12 +7,14 @@ import com.google.gson.GsonBuilder
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.okurchenko.ecocity.R
 import com.okurchenko.ecocity.network.StationApi
+import com.okurchenko.ecocity.repository.LocationListener
 import com.okurchenko.ecocity.repository.StationRepositoryImpl
 import com.okurchenko.ecocity.repository.db.DataBaseManager
 import com.okurchenko.ecocity.repository.db.StationDatabase
 import com.okurchenko.ecocity.ui.details.fragments.details.DetailsViewModel
 import com.okurchenko.ecocity.ui.details.fragments.history.HistoryViewModel
 import com.okurchenko.ecocity.ui.main.MainViewModel
+import com.okurchenko.ecocity.ui.main.fragments.map.MapViewModel
 import com.okurchenko.ecocity.utils.LocaleHelper
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -24,6 +26,9 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 private val applicationModule = module {
+
+    single { LocationListener(androidContext()) }
+
     single<SharedPreferences> {
         androidContext().getSharedPreferences(androidContext().getString(R.string.app_name), Context.MODE_PRIVATE)
     }
@@ -68,6 +73,7 @@ private val viewModels = module {
     viewModel { MainViewModel() }
     viewModel { HistoryViewModel() }
     viewModel { DetailsViewModel() }
+    viewModel { MapViewModel() }
 }
 
 val appModules = listOf(applicationModule, retrofitModules, apiModule, repoModule, viewModels)

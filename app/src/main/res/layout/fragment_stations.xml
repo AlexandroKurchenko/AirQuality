@@ -1,51 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/errorView"
+    <data>
+
+        <variable
+            name="state"
+            type="com.okurchenko.ecocity.ui.main.StationListState" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="@string/error_msg"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appBarLayout" />
+        tools:context=".ui.main.fragments.stations.StationsFragment">
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/swipeToRefreshLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/stationsList"
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/errorView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:scrollbars="vertical"
-            app:layoutManager="LinearLayoutManager"
-            tools:context=".ui.main.fragments.stations.StationsFragment"
-            tools:listitem="@layout/item_stations" />
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+            android:gravity="center"
+            android:text="@string/error_msg"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:manageVisibilityErrorState="@{state}" />
 
-    <ProgressBar
-        android:id="@+id/loadingView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:indeterminate="true"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/guideline"
-        app:layout_constraintTop_toTopOf="parent" />
-</FrameLayout>
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipeToRefreshLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:manageVisibilityLoadedState="@{state}">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/stationsList"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:scrollbars="vertical"
+                app:layoutManager="LinearLayoutManager"
+                tools:context=".ui.main.fragments.stations.StationsFragment"
+                tools:listitem="@layout/item_stations" />
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+        <ProgressBar
+            android:id="@+id/loadingView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:indeterminate="true"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/errorView"
+            app:layout_constraintTop_toTopOf="parent"
+            app:manageVisibilityLoadingState="@{state}" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

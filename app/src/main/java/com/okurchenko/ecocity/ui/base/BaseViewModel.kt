@@ -8,10 +8,10 @@ import org.koin.core.context.GlobalContext
 
 abstract class BaseViewModel<State : BaseState> : ViewModel() {
 
-    protected val repository: StationRepositoryImpl by lazy { GlobalContext.get().koin.get<StationRepositoryImpl>() }
-    protected val viewState: MutableLiveData<State> = MutableLiveData()
     //Maybe better approach will be to use https://medium.com/androiddevelopers/livedata-with-snackbar-navigation-and-other-events-the-singleliveevent-case-ac2622673150
     private val navigationCommand = LiveEvent<NavigationEvents>()
+    protected val repository: StationRepositoryImpl by lazy { GlobalContext.get().koin.get<StationRepositoryImpl>() }
+    protected val viewState: MutableLiveData<State> = MutableLiveData()
 
     fun getState(): MutableLiveData<State> = viewState
 

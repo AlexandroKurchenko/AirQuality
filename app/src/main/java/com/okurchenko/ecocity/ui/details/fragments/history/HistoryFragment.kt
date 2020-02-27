@@ -58,6 +58,16 @@ class HistoryFragment : BaseHistoryDetailsFragment() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.getNavigationEvents().observe(viewLifecycleOwner, navObserver)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        viewModel.getNavigationEvents().removeObserver(navObserver)
+    }
+
     override fun onBackActionPressed() {
         if (::actor.isInitialized) {
             actor.openMain()
@@ -78,9 +88,6 @@ class HistoryFragment : BaseHistoryDetailsFragment() {
                 is HistoryListState.HistoryItemLoading -> handleLoadingState()
                 is HistoryListState.FailLoading -> handleErrorState()
             }
-        })
-        viewModel.getNavigationEvents().observe(viewLifecycleOwner, Observer {
-            eventListener?.processEvent(it)
         })
     }
 

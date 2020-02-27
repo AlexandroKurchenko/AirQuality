@@ -2,11 +2,12 @@ package com.okurchenko.ecocity.utils
 
 import android.annotation.SuppressLint
 import android.view.View
+import android.widget.Button
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import com.okurchenko.ecocity.R
-import kotlin.time.ExperimentalTime
+import com.okurchenko.ecocity.ui.main.StationListState
 
 @BindingAdapter("visibleIfNotNull")
 fun visibleIfNotNull(view: TextView, source: String?) {
@@ -39,7 +40,6 @@ fun setAqiIndex(view: TextView, source: Int) {
     }
 }
 
-@ExperimentalTime
 @BindingAdapter("displayTimeShift")
 fun setTimeShift(view: TextView, source: Int) {
     val helper = LocaleHelper(view.context)
@@ -48,5 +48,38 @@ fun setTimeShift(view: TextView, source: Int) {
         view.text = view.context.getString(R.string.details_for_label, timeToDisplay)
     } else {
         view.visibility = View.GONE
+    }
+}
+
+@BindingAdapter("manageVisibilityLoadingState")
+fun manageVisibilityLoadingState(view: View, state: StationListState?) {
+    view.visibility = when (state) {
+        is StationListState.Loading -> View.VISIBLE
+        else -> View.GONE
+    }
+}
+
+@BindingAdapter("manageVisibilityErrorState")
+fun manageVisibilityErrorState(view: View, state: StationListState?) {
+    view.visibility = when (state) {
+        is StationListState.Error -> View.VISIBLE
+        else -> View.GONE
+    }
+}
+
+@BindingAdapter("manageVisibilityLoadedState")
+fun manageVisibilityLoadedState(view: View, state: StationListState?) {
+    view.visibility = when (state) {
+        is StationListState.StationItemsLoaded -> View.VISIBLE
+        else -> View.GONE
+    }
+}
+
+@BindingAdapter("manageVisibilityByTag")
+fun manageVisibilityByTag(view: Button, state: StationListState?) {
+    if (view.tag != null /*&& state is StationListState.StationItemsLoaded*/) {
+        view.visibility = View.VISIBLE
+    } else {
+        view.visibility = View.INVISIBLE
     }
 }

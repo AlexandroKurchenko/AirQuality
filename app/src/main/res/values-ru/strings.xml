@@ -14,4 +14,7 @@
     <string name="error_msg">Извините, что то пошло не так</string>
     <string name="details_for_label">Детали для: %1$s</string>
     <string name="no_aqi_text">Индекс качества воздуха не извесный</string>
+    <string name="open_details_btn_text">Показать детальную историю</string>
+    <string name="current_location_label">Ваше текущее местоположение: %1$s</string>
+
 </resources>

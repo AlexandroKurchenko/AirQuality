@@ -42,7 +42,7 @@ fun getNowTime(): Long {
 
 fun Long.diffTimeInMinutes(): Long = TimeUnit.MILLISECONDS.toMinutes(abs(getNowTime() - this))
 
-@ExperimentalTime
+@UseExperimental(ExperimentalTime::class)
 fun getTimeFromTimeShift(timeShift: Int, locale: Locale?): String {
     val timeToDisplay = getNowTime().hours - timeShift.toDuration(TimeUnit.HOURS)
     return locale.getFormat(DISPLAY_12_HOURS_PATTERN).format(Date(timeToDisplay.toLongMilliseconds()))

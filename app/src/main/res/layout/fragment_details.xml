@@ -8,10 +8,6 @@
         <import type="android.view.View" />
 
         <variable
-            name="actor"
-            type="com.okurchenko.ecocity.ui.details.fragments.history.HistoryListActor" />
-
-        <variable
             name="item"
             type="com.okurchenko.ecocity.repository.model.StationDetails" />
 
