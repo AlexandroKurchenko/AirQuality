@@ -7,13 +7,14 @@ import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
 
+//https://eco-city.org.ua/?zoom=13&lat=48.48250300&lng=34.96305200&station=246&random=5167202
 interface StationApi {
-    @GET("public.json")
-    fun fetchAllStations(): Deferred<Response<List<StationResponse>>>
+    @GET("public.json")//https://eco-city.org.ua/public.json
+    fun fetchAllStationsAsync(): Deferred<Response<List<StationResponse>>>
 
-    @GET("public.json")
-    fun fetchStationDataById(
+    @GET("public.json")//https://eco-city.org.ua/public.json?id=498&timeShift=0
+    fun fetchStationDataByIdAsync(
         @Query("id") id: Int,
-        @Query("timeShift") timeShift:Int
+        @Query("timeShift") timeShift: Int
     ): Deferred<Response<List<StationDataResponse>>>
 }

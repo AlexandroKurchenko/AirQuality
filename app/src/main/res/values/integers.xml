@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="anim_duration_medium">300</integer>
+    <integer name="anim_duration_long">400</integer>
+    <fraction name="info_window_guideline_perc">0.60</fraction>
+    <fraction name="divider_guideline_perc">0.80</fraction>
+</resources>

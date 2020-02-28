@@ -3,4 +3,14 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#FFC107</color>
+
+    <color name="aqi_good">#7BBD66</color>
+    <color name="aqi_moderate">#BBCF4C</color>
+    <color name="aqi_unhealthy_sensitive_groups">#FFCF00</color>
+    <color name="aqi_unhealthy">#FF9A01</color>
+    <color name="aqi_very_unhealthy">#FE1400</color>
+    <color name="aqi_hazardous">#942716</color>
+    <color name="ic_launcher_background">#008577</color>
+    <color name="map_info_transparent">#50FFFFFF</color>
+    <color name="map_info_dark_transparent">#50000000</color>
 </resources>

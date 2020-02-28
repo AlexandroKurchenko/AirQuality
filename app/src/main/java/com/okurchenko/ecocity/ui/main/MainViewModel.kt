@@ -1,45 +1,46 @@
 package com.okurchenko.ecocity.ui.main
 
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.okurchenko.ecocity.repository.StationRepositoryImpl
-import com.okurchenko.ecocity.ui.main.fragments.Events
-import com.okurchenko.ecocity.ui.main.fragments.StationAction
-import com.okurchenko.ecocity.ui.main.fragments.StationsState
+import com.okurchenko.ecocity.repository.model.StationItem
+import com.okurchenko.ecocity.ui.base.BaseStore
+import com.okurchenko.ecocity.ui.base.BaseViewAction
+import com.okurchenko.ecocity.ui.base.BaseViewModel
+import com.okurchenko.ecocity.ui.base.NavigationEvents
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
-class MainViewModel(private val repository: StationRepositoryImpl) : ViewModel() {
+open class MainViewModel : BaseViewModel<StationListState>() {
 
-    private val _state = MutableLiveData<StationsState>().apply {
-        StationsState.Loading
+    private val store: BaseStore<StationListState> = BaseStore(StationListState.Empty, StationListReducer())
+
+    init {
+        store.subscribe(viewState::postValue)
+        handleRefreshAction()
     }
 
-    fun getState(): MutableLiveData<StationsState> = _state
-
-    fun takeAction(action: StationAction) {
-        when (action) {
-            is StationAction.StationItemsRefresh -> if (_state.value != StationsState.Loading) handleRefreshAction()
-            is StationAction.StationItemClick -> handleItemClickAction(action.id)
+    override fun takeAction(action: BaseViewAction) {
+        when (val stationsViewAction = action as StationListViewAction) {
+            is StationListViewAction.StationItemsRefresh -> handleRefreshAction()
+            is StationListViewAction.StationItemClick ->
+                processNavigationEvent(NavigationEvents.OpenHistoryActivity(stationsViewAction.id))
         }
     }
 
-    private fun handleItemClickAction(id: Int) {
-        _state.postValue(StationsState.StationEvent(Events.OpenHistoryActivity(id)))
+    private fun handleRefreshAction() {
+        if (viewState.value != StationListState.Loading) {
+            store.dispatch(StationListAction.Loading)
+            viewModelScope.launch(Dispatchers.IO) {
+                val stationItems = repository.fetchAllStations()
+                displayResults(stationItems)
+            }
+        }
     }
 
-    private fun handleRefreshAction() {
-        viewModelScope.launch(Dispatchers.IO) {
-            Timber.d("Start fetch data")
-            _state.postValue(StationsState.Loading)
-            val result = repository.fetchAllStations()
-            if (result.isNotEmpty()) {
-                _state.postValue(StationsState.StationItemsContent(repository.fetchAllStations()))
-            } else {
-                _state.postValue(StationsState.Error)
-            }
+    private fun displayResults(result: List<StationItem>) {
+        if (result.isNotEmpty()) {
+            store.dispatch(StationListAction.ItemLoaded(result))
+        } else {
+            store.dispatch(StationListAction.FailLoading)
         }
     }
 }

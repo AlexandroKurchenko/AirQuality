@@ -1,13 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="activity_vertical_margin">16dp</dimen>
-    <dimen name="appbar_padding">16dp</dimen>
-    <dimen name="fab_margin">16dp</dimen>
-    <dimen name="appbar_padding_top">8dp</dimen>
-    <dimen name="text_margin">16dp</dimen>
-    <dimen name="text_min_width">50dp</dimen>
     <dimen name="preview_text_size">14sp</dimen>
     <dimen name="card_elevation">4dp</dimen>
-    <dimen name="min_hours_text_width">80dp</dimen>
+    <dimen name="default_spacing_medium">8dp</dimen>
+    <dimen name="tab_title_text_size">20sp</dimen>
+    <dimen name="map_icon_size">20dp</dimen>
 </resources>
