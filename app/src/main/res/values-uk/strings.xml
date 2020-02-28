@@ -15,6 +15,5 @@
     <string name="details_for_label">Деталi для: %1$s</string>
     <string name="no_aqi_text">Iндекс якостi повiтря не визначенний</string>
     <string name="open_details_btn_text">Показати детальну iсторiю</string>
-    <string name="current_location_label">Ваше поточне місцезнаходження: %1$s</string>
-
+    <string name="no_selected_station_label">Будь ласка, виберіть станцію на карті для відображення інформації\nабо можете провести пальцем вправо для відображення списку станцій</string>
 </resources>

@@ -18,6 +18,7 @@ import com.okurchenko.ecocity.ui.main.StationListState
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 private const val REQUEST_CODE_FOREGROUND = 1567
+private const val CLICKED_MARKER = "CLICKED_MARKER"
 
 class MapFragment2 : BaseMapFragment() {
 
@@ -34,7 +35,9 @@ class MapFragment2 : BaseMapFragment() {
         binding = bindContentView(inflater, R.layout.fragment_map, container)
         binding.lifecycleOwner = this
         binding.mapView.onCreate(savedInstanceState)
-        binding.openHistoryDetails.setOnClickListener { view -> view.tag?.run { actor.clickItem(view.tag as Int) } }
+        binding.mapInfoWindow.openHistoryDetails.setOnClickListener { view ->
+            view.tag?.run { actor.clickItem(view.tag as Int) }
+        }
         binding.zoomIn.setOnClickListener { zoomIn() }
         binding.zoomOut.setOnClickListener { zoomOut() }
         binding.mapView.addMapViewTouch(::isViewPagerUserInputEnabled)
@@ -44,7 +47,6 @@ class MapFragment2 : BaseMapFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.mapView.getMapAsync(this)
-
     }
 
     override fun onResume() {
@@ -56,8 +58,17 @@ class MapFragment2 : BaseMapFragment() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        //TODO save selected binding item from markerClick()
+        binding.mapInfoWindow.station?.run {
+            outState.putParcelable(CLICKED_MARKER, binding.mapInfoWindow.station)
+        }
         binding.mapView.onSaveInstanceState(outState)
+    }
+
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+        if (savedInstanceState != null && savedInstanceState.containsKey(CLICKED_MARKER)) {
+            binding.mapInfoWindow.station = savedInstanceState.getParcelable(CLICKED_MARKER)
+        }
     }
 
     override fun onPause() {
@@ -91,7 +102,7 @@ class MapFragment2 : BaseMapFragment() {
     }
 
     override fun markerClick(station: StationItem) {
-        binding.station = station
+        binding.mapInfoWindow.station = station
     }
 
     private fun subscribeToViewModelUpdate() {
@@ -131,14 +142,11 @@ class MapFragment2 : BaseMapFragment() {
     }
 
     private fun updateLocation(it: Location) {
-        val currentLatLon = "${it.latitude}, ${it.longitude}"
-        binding.currentLocationLabel.text =
-            context?.resources?.getString(R.string.current_location_label, currentLatLon)
-        displayCurrentLocation(it)
+        displayCurrentLocationOnMap(it)
         moveCamera(it)
     }
 
     private fun isViewPagerUserInputEnabled(enabled: Boolean) {
-        (activity as? MainActivity)?.getViewPager2()?.isUserInputEnabled = enabled
+        (activity as? MainActivity)?.setViewPager2UserInputEnabled(enabled)
     }
 }

@@ -18,7 +18,9 @@ class MainActivity : AppCompatActivity(), EventProcessor {
     private val tabTitles = arrayOf(R.string.map_tab_text, R.string.list_tab_text)
     private lateinit var viewPager2: ViewPager2
 
-    fun getViewPager2(): ViewPager2? = viewPager2//TODO make it more elegant
+    fun setViewPager2UserInputEnabled(isUserInputEnabled: Boolean) {
+        if (::viewPager2.isInitialized) viewPager2.isUserInputEnabled = isUserInputEnabled
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

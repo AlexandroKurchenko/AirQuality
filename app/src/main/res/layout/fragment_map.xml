@@ -5,12 +5,6 @@
 
     <data>
 
-        <import type="android.view.View" />
-
-        <variable
-            name="station"
-            type="com.okurchenko.ecocity.repository.model.StationItem" />
-
         <variable
             name="state"
             type="com.okurchenko.ecocity.ui.main.StationListState" />
@@ -56,7 +50,6 @@
                 android:orientation="horizontal"
                 app:layout_constraintGuide_percent="@fraction/info_window_guideline_perc" />
 
-
             <com.okurchenko.ecocity.utils.CustomMapView
                 android:id="@+id/mapView"
                 android:layout_width="match_parent"
@@ -66,74 +59,9 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/infoView"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:background="@color/map_info_transparent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/infoWindowGuideline">
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/currentLocationLabel"
-                    style="@style/DayNightTextView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="8dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:text="location" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/stationNameInfo"
-                    style="@style/DayNightTextView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:text="@{station.name}"
-                    android:visibility="@{station.name != null ? View.VISIBLE : View.GONE}"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/currentLocationLabel"
-                    tools:text="Station naming\nsecond line" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/stationUpdateTime"
-                    style="@style/DayNightTextView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:text="@{@string/last_update_time_text(station.time)}"
-                    android:visibility="@{station.time != null ? View.VISIBLE : View.GONE}"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/stationNameInfo"
-                    tools:text="update time" />
-
-                <Button
-                    android:id="@+id/openHistoryDetails"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="16dp"
-                    android:tag="@{station.id}"
-                    android:text="@string/open_details_btn_text"
-                    android:textAllCaps="false"
-                    android:visibility="@{station.name != null ? View.VISIBLE : View.GONE}"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/stationUpdateTime" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
+            <include
+                android:id="@+id/map_info_window"
+                layout="@layout/map_info_window" />
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/zoomIn"

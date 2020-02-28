@@ -45,7 +45,7 @@ abstract class BaseMapFragment : BaseNavigationFragment(), OnMapReadyCallback {
         if (::markerJob.isInitialized && !markerJob.isCancelled) markerJob.cancel()
     }
 
-    protected fun displayCurrentLocation(location: Location) {
+    protected fun displayCurrentLocationOnMap(location: Location) {
         val bitmapDescriptor: BitmapDescriptor? = bitmapDescriptorFromVector()
         val currentLocation = LatLng(location.latitude, location.longitude)
         val options = MarkerOptions().position(currentLocation).apply {

@@ -2,7 +2,6 @@ package com.okurchenko.ecocity.utils
 
 import android.annotation.SuppressLint
 import android.view.View
-import android.widget.Button
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
@@ -72,14 +71,5 @@ fun manageVisibilityLoadedState(view: View, state: StationListState?) {
     view.visibility = when (state) {
         is StationListState.StationItemsLoaded -> View.VISIBLE
         else -> View.GONE
-    }
-}
-
-@BindingAdapter("manageVisibilityByTag")
-fun manageVisibilityByTag(view: Button, state: StationListState?) {
-    if (view.tag != null /*&& state is StationListState.StationItemsLoaded*/) {
-        view.visibility = View.VISIBLE
-    } else {
-        view.visibility = View.INVISIBLE
     }
 }
