@@ -7,7 +7,7 @@ fun round(input: Double, roundValue: Int): Double {
     return input.toBigDecimal().setScale(roundValue, RoundingMode.HALF_EVEN).toDouble()
 }
 //Usage of or use Location.distanceBetween(lat, lon, currentLat, currentLon, distance);
-//    // distance[0] is now the distance between these lat/lons in meters
+//    // distance[0] is now the distance between these lat/lon in meters
 //    if (distance[0] < 2.0) {
 //        // your code...
 //    }

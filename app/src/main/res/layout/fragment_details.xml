@@ -22,7 +22,8 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="18dp">
+            android:paddingBottom="18dp"
+            app:layout_optimizationLevel="standard|dimensions">
 
             <TextView
                 android:id="@+id/timeShift"
@@ -118,7 +119,7 @@
                 app:layout_constraintStart_toStartOf="@+id/timeShift"
                 app:layout_constraintTop_toBottomOf="@+id/pressureLabel"
                 app:visibleIfNotNull="@{item.solarRadiation}"
-                tools:text="Solar radioation" />
+                tools:text="Solar radiation" />
 
             <TextView
                 android:id="@+id/yRadiationLabel"

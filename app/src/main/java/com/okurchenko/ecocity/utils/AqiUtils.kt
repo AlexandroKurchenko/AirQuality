@@ -12,9 +12,9 @@ fun getAqiIndex(aqi: Int): Int {
     }
 }
 
-private fun Int.isGood(): Boolean = this in 1..49
-private fun Int.isModerate(): Boolean = this in 51..99
-private fun Int.isUnhealthySensitiveGroups(): Boolean = this in 101..149
-private fun Int.isUnhealthy(): Boolean = this in 151..199
-private fun Int.isVeryUnhealthy(): Boolean = this in 201..299
-private fun Int.isHazardous(): Boolean = this in 301..499
+private fun Int.isGood(): Boolean = this in 1..50
+private fun Int.isModerate(): Boolean = this in 51..100
+private fun Int.isUnhealthySensitiveGroups(): Boolean = this in 101..150
+private fun Int.isUnhealthy(): Boolean = this in 151..200
+private fun Int.isVeryUnhealthy(): Boolean = this in 201..300
+private fun Int.isHazardous(): Boolean = this in 301..500

@@ -38,7 +38,7 @@ class HistoryFragment : BaseHistoryDetailsFragment() {
 
     private val viewModel by viewModel<HistoryViewModel>()
     private lateinit var actor: HistoryListActor
-    private lateinit var adapter: DetailsAdapter
+    internal lateinit var detailsAdapter: DetailsAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(R.layout.fragment_history, container, false)
@@ -49,9 +49,11 @@ class HistoryFragment : BaseHistoryDetailsFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         actor = HistoryListActor(viewModel::takeAction)
-        adapter = DetailsAdapter(actor)
-        historyList.adapter = adapter
-        context?.let { context -> historyList.addItemDecoration(ItemOffsetDecoration(context)) }
+        detailsAdapter = DetailsAdapter(actor)
+        historyList.apply {
+            adapter = detailsAdapter
+            addItemDecoration(ItemOffsetDecoration())
+        }
         subscribeToViewModelUpdate()
         if (savedInstanceState == null) {
             loadItems()
@@ -92,23 +94,23 @@ class HistoryFragment : BaseHistoryDetailsFragment() {
     }
 
     private fun handleLoadedState(items: List<StationHistoryItem>) {
-        if (::adapter.isInitialized) adapter.submitData(items)
+        if (::detailsAdapter.isInitialized) detailsAdapter.submitData(items)
         historyList.addOnScrollListener(scrollListener)
         displayErrorView(false)
     }
 
     private fun handleLoadingState() {
-        if (::adapter.isInitialized) {
-            adapter.showLoading()
-            historyList.smoothScrollToPosition(adapter.itemCount)
+        if (::detailsAdapter.isInitialized) {
+            detailsAdapter.showLoading()
+            historyList.smoothScrollToPosition(detailsAdapter.itemCount)
         }
         displayErrorView(false)
     }
 
     private fun handleErrorState() {
-        if (::adapter.isInitialized) {
-            adapter.hideLoading()
-            historyList.smoothScrollToPosition(adapter.itemCount)
+        if (::detailsAdapter.isInitialized) {
+            detailsAdapter.hideLoading()
+            historyList.smoothScrollToPosition(detailsAdapter.itemCount)
         }
         displayErrorView(true)
         removeScrollListener()
@@ -119,14 +121,14 @@ class HistoryFragment : BaseHistoryDetailsFragment() {
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
             super.onScrolled(recyclerView, dx, dy)
             val linearLayoutManager = recyclerView.layoutManager as LinearLayoutManager
-            if (::adapter.isInitialized && linearLayoutManager.findLastCompletelyVisibleItemPosition() == adapter.itemCount - 1) {
+            if (::detailsAdapter.isInitialized && linearLayoutManager.findLastCompletelyVisibleItemPosition() == detailsAdapter.itemCount - 1) {
                 processEndListAction()
             }
         }
     }
 
-    private fun processEndListAction() {
-        val lastItemTimeShift = adapter.getLastItemTimeShift()
+    internal fun processEndListAction() {
+        val lastItemTimeShift = detailsAdapter.getLastItemTimeShift()
         val plannedTimeToShift = lastItemTimeShift + MIN_DISPLAY_ITEMS_COUNT
         if (plannedTimeToShift <= MAX_DISPLAY_ITEMS_COUNT) {
             removeScrollListener()

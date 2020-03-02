@@ -13,24 +13,28 @@ import com.okurchenko.ecocity.ui.main.MainActivity
 
 open class BaseNavigationFragment : Fragment() {
 
-    private lateinit var eventListener: EventProcessor
-    protected val navObserver = Observer<NavigationEvents> { event -> eventListener.processEvent(event) }
+    private var eventListener: EventProcessor? = null
+    protected val navObserver = Observer<NavigationEvents> { event -> eventListener?.processEvent(event) }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         try {
-            eventListener = requireActivity() as? HistoryDetailsActivity ?: requireActivity() as MainActivity
+            val activity = requireActivity()
+            eventListener = activity as? HistoryDetailsActivity ?: activity as MainActivity
         } catch (ex: ClassCastException) {
             throw ClassCastException("${requireActivity()} must implement EventProcessor")
         }
     }
 
+    override fun onDetach() {
+        super.onDetach()
+        eventListener = null
+    }
 
     protected open fun <T : ViewDataBinding> bindContentView(
         layoutInflater: LayoutInflater,
         @LayoutRes layoutId: Int,
         parent: ViewGroup?
-    ): T {
-        return DataBindingUtil.inflate(layoutInflater, layoutId, parent, false)
-    }
+    ): T = DataBindingUtil.inflate(layoutInflater, layoutId, parent, false)
+
 }

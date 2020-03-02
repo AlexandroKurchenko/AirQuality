@@ -20,7 +20,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 private const val REQUEST_CODE_FOREGROUND = 1567
 private const val CLICKED_MARKER = "CLICKED_MARKER"
 
-class MapFragment2 : BaseMapFragment() {
+class MapFragment : BaseMapFragment() {
 
     private val viewModel by viewModel<MapViewModel>()
     private lateinit var binding: FragmentMapBinding
@@ -33,7 +33,7 @@ class MapFragment2 : BaseMapFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = bindContentView(inflater, R.layout.fragment_map, container)
-        binding.lifecycleOwner = this
+        binding.lifecycleOwner = this@MapFragment.viewLifecycleOwner
         binding.mapView.onCreate(savedInstanceState)
         binding.mapInfoWindow.openHistoryDetails.setOnClickListener { view ->
             view.tag?.run { actor.clickItem(view.tag as Int) }
@@ -46,7 +46,7 @@ class MapFragment2 : BaseMapFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.mapView.getMapAsync(this)
+        binding.mapView.getMapAsync(this@MapFragment)
     }
 
     override fun onResume() {
@@ -124,7 +124,7 @@ class MapFragment2 : BaseMapFragment() {
     }
 
     private fun hasLocationPermission(): Boolean =
-        context?.run {
+        this@MapFragment.context?.run {
             ContextCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION

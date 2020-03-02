@@ -21,10 +21,10 @@ import timber.log.Timber
 
 abstract class BaseMapFragment : BaseNavigationFragment(), OnMapReadyCallback {
 
-    private lateinit var map: GoogleMap
-    private lateinit var markerJob: Job
     private var isCameraMovedToMyLocation: Boolean = false
     private lateinit var currentMarker: Marker
+    private lateinit var map: GoogleMap
+    private lateinit var markerJob: Job
 
     abstract fun mapReady()
     abstract fun markerClick(station: StationItem)
@@ -37,7 +37,6 @@ abstract class BaseMapFragment : BaseNavigationFragment(), OnMapReadyCallback {
         }
         setMapStyle()
         mapReady()
-
     }
 
     override fun onPause() {

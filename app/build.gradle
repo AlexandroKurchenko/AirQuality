@@ -2,7 +2,6 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
-//apply plugin: "androidx.navigation.safeargs.kotlin"
 
 android {
     compileSdkVersion 29
@@ -37,9 +36,6 @@ android {
     dataBinding {
         enabled = true
     }
-//    kapt {
-//        generateStubs = true
-//    }
 }
 
 dependencies {
@@ -47,7 +43,7 @@ dependencies {
     def lifecycle = '2.2.0'
     def room_version = '2.2.4'
     def koin_version = "2.0.1"
-    def gmc_play_servies = "17.0.0"
+    def play_services = "17.0.0"
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'androidx.appcompat:appcompat:1.1.0'
@@ -74,14 +70,12 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation "com.github.hadilq.liveevent:liveevent:1.2.0"
     implementation("io.coil-kt:coil:0.9.5")
-    implementation "com.google.android.gms:play-services-location:$gmc_play_servies"
-    implementation "com.google.android.gms:play-services-maps:$gmc_play_servies"
+    implementation "com.google.android.gms:play-services-location:$play_services"
+    implementation "com.google.android.gms:play-services-maps:$play_services"
     implementation 'com.jakewharton.timber:timber:4.7.1'
 //    testImplementation 'junit:junit:4.13'
 //    testImplementation 'org.mockito:mockito-core:3.0.0'
 //    testImplementation 'android.arch.core:core-testing:1.1.1'
 //    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
 //    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-//    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
-//    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
 }

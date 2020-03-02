@@ -13,12 +13,13 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.main.fragments.map.MapFragment">
+        tools:context=".ui.main.fragments.map.MapFragment"
+        app:layout_optimizationLevel="standard|dimensions">
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/errorView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:gravity="center"
             android:text="@string/error_msg"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -27,74 +28,72 @@
             app:manageVisibilityErrorState="@{state}"
             tools:visibility="gone" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+        <androidx.constraintlayout.widget.Group
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:constraint_referenced_ids="divideGuideline,infoWindowGuideline,mapView,map_info_window"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:manageVisibilityLoadedState="@{state}">
+            app:manageVisibilityLoadedState="@{state}" />
 
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/divideGuideline"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_constraintGuide_percent="@fraction/divider_guideline_perc" />
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/divideGuideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="@fraction/divider_guideline_perc" />
 
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/infoWindowGuideline"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_constraintGuide_percent="@fraction/info_window_guideline_perc" />
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/infoWindowGuideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="@fraction/info_window_guideline_perc" />
 
-            <com.okurchenko.ecocity.utils.CustomMapView
-                android:id="@+id/mapView"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                app:layout_constraintBottom_toTopOf="@+id/divideGuideline"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+        <com.okurchenko.ecocity.utils.CustomMapView
+            android:id="@+id/mapView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/divideGuideline"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <include
-                android:id="@+id/map_info_window"
-                layout="@layout/map_info_window" />
+        <include
+            android:id="@+id/map_info_window"
+            layout="@layout/map_info_window" />
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/zoomIn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:clickable="true"
-                android:focusable="true"
-                app:fabSize="mini"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_add_black_24dp" />
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/zoomIn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:clickable="true"
+            android:focusable="true"
+            app:fabSize="mini"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_add_black_24dp" />
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/zoomOut"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:clickable="true"
-                android:focusable="true"
-                app:fabSize="mini"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/zoomIn"
-                app:srcCompat="@drawable/ic_remove_black_24dp" />
-
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/zoomOut"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:clickable="true"
+            android:focusable="true"
+            app:fabSize="mini"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/zoomIn"
+            app:srcCompat="@drawable/ic_remove_black_24dp" />
 
         <ProgressBar
             android:id="@+id/loadingView"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:indeterminate="true"

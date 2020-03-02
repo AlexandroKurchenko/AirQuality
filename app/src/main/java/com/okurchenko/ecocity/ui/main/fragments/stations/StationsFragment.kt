@@ -19,12 +19,12 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class StationsFragment : BaseNavigationFragment() {
 
     private val viewModel by viewModel<MainViewModel>()
-    private lateinit var adapter: StationsAdapter
+    private lateinit var stationsAdapter: StationsAdapter
     private lateinit var binding: FragmentStationsBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = bindContentView(inflater, R.layout.fragment_stations, container)
-        binding.lifecycleOwner = this
+        binding.lifecycleOwner = this@StationsFragment.viewLifecycleOwner
         return binding.root
     }
 
@@ -35,9 +35,11 @@ class StationsFragment : BaseNavigationFragment() {
             actor.refresh()
             binding.swipeToRefreshLayout.isRefreshing = false
         }
-        adapter = StationsAdapter(actor)
-        binding.stationsList.adapter = adapter
-        context?.let { binding.stationsList.addItemDecoration(ItemOffsetDecoration(it)) }
+        stationsAdapter = StationsAdapter(actor)
+        binding.stationsList.apply {
+            adapter = stationsAdapter
+            addItemDecoration(ItemOffsetDecoration())
+        }
         subscribeToViewModelUpdate()
     }
 
@@ -61,15 +63,15 @@ class StationsFragment : BaseNavigationFragment() {
     }
 
     private fun displayContent(data: List<StationItem>) {
-        if (::adapter.isInitialized) {
-            adapter.submitData(data)
+        if (::stationsAdapter.isInitialized) {
+            stationsAdapter.submitData(data)
             runAfterLoadingLayoutAnimation()
         }
     }
 
     private fun runAfterLoadingLayoutAnimation() = binding.stationsList.apply {
         val resourceId = R.anim.layout_animation_from_bottom
-        layoutAnimation = AnimationUtils.loadLayoutAnimation(context, resourceId)
+        layoutAnimation = AnimationUtils.loadLayoutAnimation(this@StationsFragment.requireContext(), resourceId)
         adapter?.notifyDataSetChanged()
         scheduleLayoutAnimation()
     }

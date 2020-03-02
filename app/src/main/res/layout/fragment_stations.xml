@@ -13,7 +13,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.main.fragments.stations.StationsFragment">
+        tools:context=".ui.main.fragments.stations.StationsFragment"
+        app:layout_optimizationLevel="standard|dimensions">
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/errorView"

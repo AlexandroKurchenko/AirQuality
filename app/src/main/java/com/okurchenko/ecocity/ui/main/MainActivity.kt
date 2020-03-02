@@ -12,7 +12,6 @@ import com.okurchenko.ecocity.ui.base.EventProcessor
 import com.okurchenko.ecocity.ui.base.NavigationEvents
 import com.okurchenko.ecocity.ui.details.HistoryDetailsActivity
 
-
 class MainActivity : AppCompatActivity(), EventProcessor {
 
     private val tabTitles = arrayOf(R.string.map_tab_text, R.string.list_tab_text)
