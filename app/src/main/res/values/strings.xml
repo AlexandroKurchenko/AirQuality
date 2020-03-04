@@ -17,7 +17,4 @@
     <string name="open_details_btn_text">Show history details</string>
     <string name="no_selected_station_label">Please select station on the map to display information\nor you can swipe right to List of station</string>
     <string name="located_from_user">Is %1$s kilometers from you</string>
-
-    <string name="sort_by_name" translatable="false">SortByName</string>
-    <string name="sort_by_distance" translatable="false">SortByDistance</string>
 </resources>
