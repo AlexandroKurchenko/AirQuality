@@ -12,8 +12,9 @@ data class StationItem(
     val name: String,
     val time: String,
     val lat: Double,
-    val lon: Double
+    val lon: Double,
+    val distance: Double
 ) : Parcelable {
-    fun copy(id: Int = this.id, name: String = this.name, time: String = this.time) =
-        StationItem(id, name, time, lat, lon)
+    fun copy(id: Int = this.id, name: String = this.name, time: String = this.time, distance: Double = this.distance) =
+        StationItem(id, name, time, lat, lon, distance)
 }

@@ -14,7 +14,7 @@ interface StationDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insertStationItems(stationList: List<StationItem>): List<Long>
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertStationItem(station: StationItem): Long
 
     @Update(onConflict = OnConflictStrategy.IGNORE)

@@ -16,4 +16,6 @@
     <string name="no_aqi_text">Индекс качества воздуха не извесный</string>
     <string name="open_details_btn_text">Показать детальную историю</string>
     <string name="no_selected_station_label">Пожалуйста, выберите станцию на карте для отображения информации\nили можете провести пальцем вправо для отображения списка станций</string>
+    <string name="located_from_user">Находится в %1$s километров от вас</string>
+
 </resources>

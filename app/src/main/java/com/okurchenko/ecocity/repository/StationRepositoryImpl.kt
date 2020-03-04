@@ -1,7 +1,6 @@
 package com.okurchenko.ecocity.repository
 
-import android.content.SharedPreferences
-import androidx.core.content.edit
+import android.location.Location
 import com.okurchenko.ecocity.network.StationApi
 import com.okurchenko.ecocity.network.model.StationDataResponse
 import com.okurchenko.ecocity.network.model.StationResponse
@@ -9,21 +8,70 @@ import com.okurchenko.ecocity.repository.db.DataBaseManager
 import com.okurchenko.ecocity.repository.model.StationDetails
 import com.okurchenko.ecocity.repository.model.StationHistoryItem
 import com.okurchenko.ecocity.repository.model.StationItem
-import com.okurchenko.ecocity.repository.utils.DetailsAggregator
-import com.okurchenko.ecocity.repository.utils.DetailsToPreviewConverter
-import com.okurchenko.ecocity.repository.utils.StationItemAggregator
+import com.okurchenko.ecocity.repository.utils.*
+import com.okurchenko.ecocity.ui.main.fragments.stations.StationSort
 import com.okurchenko.ecocity.utils.diffTimeInMinutes
-import com.okurchenko.ecocity.utils.getNowTime
+import com.okurchenko.ecocity.utils.round
 import timber.log.Timber
-
-private const val FETCH_ALL_STATIONS_SYNC_TIME = "FETCH_ALL_STATIONS_SYNC_TIME"
-private const val REFRESH_TIME = 30//min
 
 class StationRepositoryImpl(
     private val api: StationApi,
     private val dataBaseManager: DataBaseManager,
-    private val preferences: SharedPreferences
+    private val preferencesManager: StationPreferencesManager
 ) : BaseNetworkRepository(), StationsRepository {
+
+    override suspend fun fetchStationDetailsById(stationId: Int, timeShift: Int): StationDetails? =
+        getHistoryForTimePeriod(timeShift, stationId)
+
+    override suspend fun getAllStationSortedByName(): List<StationItem> {
+        val stations: List<StationItem> = getAllStations()
+        return dataBaseManager.sortAllStations(stations, StationSort.SortByName)
+    }
+
+    override suspend fun getAllStationSortedByDistance(location: Location): List<StationItem> {
+        val stations: List<StationItem> = getAllStations()
+        val isStationsContainsDistance: Boolean = isItemsDistanceValid(stations)
+        val isLocationSame: Boolean = compareLocations(location)
+        val stationsToSort = if (isStationsContainsDistance && isLocationSame) {
+            stations
+        } else {
+            val sortedItems: List<StationItem> = dataBaseManager.updateItemsWithDistance(location, stations)
+            preferencesManager.saveCurrentLocation(location)
+            sortedItems
+        }
+        return dataBaseManager.sortAllStations(stationsToSort, StationSort.SortByDistance)
+    }
+
+    private fun isItemsDistanceValid(stations: List<StationItem>): Boolean = stations.any { it.distance != 0.0 }
+
+    private suspend fun getAllStations(): List<StationItem> {
+        val dbItems = dataBaseManager.getAllStationItems()
+        return if (dbItems.isNotEmpty() && preferencesManager.isLastFetchFresh()) {
+            dbItems
+        } else {
+            val networkResponse = safeApiCall { api.fetchAllStationsAsync().await() }
+            processAllStationsNetworkResponse(networkResponse)
+        }
+    }
+
+    private fun processAllStationsNetworkResponse(networkResponse: NetworkResult<List<StationResponse>>)
+        : List<StationItem> {
+        when (networkResponse) {
+            is NetworkResult.Success -> {
+                val stationItems = StationItemAggregator.convertStationResponseToInstance(networkResponse.data)
+                dataBaseManager.storeNewStationItems(stationItems)
+                preferencesManager.saveAllStationsSyncTime()
+                return stationItems
+            }
+            is NetworkResult.Error -> Timber.e("fetchAllStations error ${networkResponse.networkError}")
+        }
+        return emptyList()
+    }
+
+    private fun compareLocations(location: Location): Boolean =
+        round(location.latitude, 2).toFloat() == preferencesManager.getCurrentLat()
+            && round(location.longitude, 2).toFloat() == preferencesManager.getCurrentLon()
+
 
     override suspend fun fetchHistoryItemsByStationId(
         stationId: Int,
@@ -38,33 +86,6 @@ class StationRepositoryImpl(
             }
         }
         return periodOfHistory
-    }
-
-    override suspend fun fetchStationDetailsById(stationId: Int, timeShift: Int): StationDetails? =
-        getHistoryForTimePeriod(timeShift, stationId)
-
-    override suspend fun fetchAllStations(): List<StationItem> {
-        val dbItems = dataBaseManager.getAllStationItems()
-        val lastFetchTime = preferences.getLong(FETCH_ALL_STATIONS_SYNC_TIME, 0)
-        return if (dbItems.isNotEmpty() && lastFetchTime.diffTimeInMinutes() < REFRESH_TIME) {
-            dataBaseManager.sortAllStation(dbItems)
-        } else {
-            val networkResponse = safeApiCall { api.fetchAllStationsAsync().await() }
-            processAllStationsNetworkResponse(networkResponse)
-        }
-    }
-
-    private fun processAllStationsNetworkResponse(networkResponse: NetworkResult<List<StationResponse>>): List<StationItem> {
-        when (networkResponse) {
-            is NetworkResult.Success -> {
-                val stationItems = StationItemAggregator.convertStationResponseToInstance(networkResponse.data)
-                dataBaseManager.storeNewStationItems(stationItems)
-                saveAllStationsSyncTime()
-                return dataBaseManager.sortAllStation(stationItems)
-            }
-            is NetworkResult.Error -> Timber.e("fetchAllStations error ${networkResponse.networkError}")
-        }
-        return emptyList()
     }
 
     private suspend fun getHistoryForTimePeriod(timePeriod: Int, stationId: Int): StationDetails? {
@@ -96,6 +117,4 @@ class StationRepositoryImpl(
         }
         return null
     }
-
-    private fun saveAllStationsSyncTime() = preferences.edit { putLong(FETCH_ALL_STATIONS_SYNC_TIME, getNowTime()) }
 }

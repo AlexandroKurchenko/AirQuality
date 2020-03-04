@@ -5,8 +5,11 @@ import android.view.View
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.okurchenko.ecocity.R
+import com.okurchenko.ecocity.ui.main.StationListActor
 import com.okurchenko.ecocity.ui.main.StationListState
+import com.okurchenko.ecocity.ui.main.fragments.stations.StationSort
 
 @BindingAdapter("visibleIfNotNull")
 fun visibleIfNotNull(view: TextView, source: String?) {
@@ -71,5 +74,26 @@ fun manageVisibilityLoadedState(view: View, state: StationListState?) {
     view.visibility = when (state) {
         is StationListState.StationItemsLoaded -> View.VISIBLE
         else -> View.GONE
+    }
+}
+
+@BindingAdapter("sortAction")
+fun sortAction(fab: FloatingActionButton, actor: StationListActor?) {
+    fab.setOnClickListener {
+        when (it.tag) {
+            StationSort.SortByName -> actor?.sortByName()
+            else -> actor?.sortByDistance()
+        }
+    }
+}
+
+@SuppressLint("StringFormatMatches")
+@BindingAdapter("manageVisibilityOfDistance")
+fun manageVisibilityOfDistance(view: TextView, distance: Double) {
+    if (distance == 0.0) {
+        view.visibility = View.GONE
+    } else {
+        view.text = view.resources.getString(R.string.located_from_user, distance)
+        view.visibility = View.VISIBLE
     }
 }

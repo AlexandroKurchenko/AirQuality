@@ -1,7 +1,6 @@
 package com.okurchenko.ecocity.di
 
 import android.content.Context
-import android.content.SharedPreferences
 import androidx.room.Room
 import com.google.gson.GsonBuilder
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
@@ -10,7 +9,9 @@ import com.okurchenko.ecocity.network.StationApi
 import com.okurchenko.ecocity.repository.LocationListener
 import com.okurchenko.ecocity.repository.StationRepositoryImpl
 import com.okurchenko.ecocity.repository.db.DataBaseManager
+import com.okurchenko.ecocity.repository.db.Migrations.MIGRATION_4_5
 import com.okurchenko.ecocity.repository.db.StationDatabase
+import com.okurchenko.ecocity.repository.utils.StationPreferencesManager
 import com.okurchenko.ecocity.ui.details.fragments.details.DetailsViewModel
 import com.okurchenko.ecocity.ui.details.fragments.history.HistoryViewModel
 import com.okurchenko.ecocity.ui.main.MainViewModel
@@ -29,12 +30,18 @@ private val applicationModule = module {
 
     single { LocationListener(androidContext()) }
 
-    single<SharedPreferences> {
-        androidContext().getSharedPreferences(androidContext().getString(R.string.app_name), Context.MODE_PRIVATE)
+    single {
+        StationPreferencesManager(
+            androidContext().getSharedPreferences(
+                androidContext().getString(R.string.app_name),
+                Context.MODE_PRIVATE
+            )
+        )
     }
 
     single {
-        Room.databaseBuilder(androidContext(), StationDatabase::class.java, StationDatabase::class.java.name).build()
+        Room.databaseBuilder(androidContext(), StationDatabase::class.java, StationDatabase::class.java.name)
+            .addMigrations(MIGRATION_4_5).build()
     }
 
     single { LocaleHelper(androidContext()).getLocale() }

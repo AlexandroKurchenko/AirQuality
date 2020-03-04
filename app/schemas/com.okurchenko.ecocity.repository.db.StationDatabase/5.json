@@ -1,12 +1,12 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 4,
-    "identityHash": "2d26849a1b51070af0ba114d0660f84b",
+    "version": 5,
+    "identityHash": "8075aa550f7b12892efa5a82d6b93a6c",
     "entities": [
       {
         "tableName": "StationItem",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `name` TEXT NOT NULL, `time` TEXT NOT NULL, `lat` REAL NOT NULL, `lon` REAL NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `name` TEXT NOT NULL, `time` TEXT NOT NULL, `lat` REAL NOT NULL, `lon` REAL NOT NULL, `distance` REAL NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -35,6 +35,12 @@
           {
             "fieldPath": "lon",
             "columnName": "lon",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "distance",
+            "columnName": "distance",
             "affinity": "REAL",
             "notNull": true
           }
@@ -202,7 +208,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '2d26849a1b51070af0ba114d0660f84b')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '8075aa550f7b12892efa5a82d6b93a6c')"
     ]
   }
 }

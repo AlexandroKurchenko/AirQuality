@@ -14,7 +14,8 @@ object StationItemAggregator {
                     name = getStationItemName(response),
                     time = response.time,
                     lat = response.latitude.toDouble(),
-                    lon = response.longitude.toDouble()
+                    lon = response.longitude.toDouble(),
+                    distance = 0.0
                 )
             }
     }
