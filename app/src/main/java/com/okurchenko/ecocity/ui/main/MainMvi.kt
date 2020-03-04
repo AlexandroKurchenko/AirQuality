@@ -6,11 +6,12 @@ import com.okurchenko.ecocity.ui.base.BaseAction
 import com.okurchenko.ecocity.ui.base.BaseState
 import com.okurchenko.ecocity.ui.base.BaseViewAction
 import com.okurchenko.ecocity.ui.base.Reducer
+import com.okurchenko.ecocity.ui.main.fragments.stations.StationSort
 
 sealed class StationListState : BaseState {
     object Loading : StationListState()
     object Error : StationListState()
-    class StationItemsLoaded(val data: List<StationItem>) : StationListState()
+    class StationItemsLoaded(val data: List<StationItem>, val sort: StationSort) : StationListState()
     class LocationUpdated(val location: Location) : StationListState()
     object Empty : StationListState()
 }
@@ -20,7 +21,7 @@ class StationListReducer : Reducer<StationListState>() {
         return when (action) {
             is StationListAction.Loading -> StationListState.Loading
             is StationListAction.FailLoading -> StationListState.Error
-            is StationListAction.ItemLoaded -> StationListState.StationItemsLoaded(action.items)
+            is StationListAction.ItemLoaded -> StationListState.StationItemsLoaded(action.items, action.sort)
             is StationListAction.LocationUpdate -> StationListState.LocationUpdated(action.location)
             else -> state
         }
@@ -29,15 +30,17 @@ class StationListReducer : Reducer<StationListState>() {
 
 sealed class StationListViewAction : BaseViewAction {
     class StationItemClick(val id: Int) : StationListViewAction()
-    object StationItemsRefresh : StationListViewAction()
+    class StationItemsRefresh(val sorting: StationSort) : StationListViewAction()
     object StationProvideLocationUpdate : StationListViewAction()
     object StationStopProvideLocationUpdate : StationListViewAction()
+    object StationSortByDistance : StationListViewAction()
+    object StationSortByName : StationListViewAction()
 }
 
 sealed class StationListAction : BaseAction {
     object Loading : StationListAction()
     object FailLoading : StationListAction()
-    class ItemLoaded(val items: List<StationItem>) : StationListAction()
+    class ItemLoaded(val items: List<StationItem>, val sort: StationSort) : StationListAction()
     class LocationUpdate(val location: Location) : StationListAction()
 }
 
@@ -45,5 +48,13 @@ class StationListActor(private val emit: (StationListViewAction) -> Unit) {
     fun clickItem(id: Int) = emit(StationListViewAction.StationItemClick(id))
     fun requestLocationUpdate() = emit(StationListViewAction.StationProvideLocationUpdate)
     fun stopLocationUpdate() = emit(StationListViewAction.StationStopProvideLocationUpdate)
-    fun refresh() = emit(StationListViewAction.StationItemsRefresh)
+    fun refresh(sorting: StationSort) = emit(StationListViewAction.StationItemsRefresh(sorting))
+    fun sortByName() = emit(StationListViewAction.StationSortByName)
+    fun sortByDistance() = emit(StationListViewAction.StationSortByDistance)
+}
+
+sealed class MainSortingState {
+    object CurrentLocationIsNotAvailable : MainSortingState()
+    object SortingByDistanceSuccess : MainSortingState()
+    object SortingByNameSuccess : MainSortingState()
 }

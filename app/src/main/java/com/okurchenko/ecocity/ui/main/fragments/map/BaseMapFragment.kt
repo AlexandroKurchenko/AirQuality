@@ -7,6 +7,7 @@ import android.location.Location
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.graphics.drawable.toBitmap
+import androidx.lifecycle.lifecycleScope
 import coil.Coil
 import coil.api.get
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -16,7 +17,9 @@ import com.google.android.gms.maps.model.*
 import com.okurchenko.ecocity.R
 import com.okurchenko.ecocity.repository.model.StationItem
 import com.okurchenko.ecocity.ui.base.BaseNavigationFragment
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 abstract class BaseMapFragment : BaseNavigationFragment(), OnMapReadyCallback {
@@ -24,7 +27,6 @@ abstract class BaseMapFragment : BaseNavigationFragment(), OnMapReadyCallback {
     private var isCameraMovedToMyLocation: Boolean = false
     private lateinit var currentMarker: Marker
     private lateinit var map: GoogleMap
-    private lateinit var markerJob: Job
 
     abstract fun mapReady()
     abstract fun markerClick(station: StationItem)
@@ -37,11 +39,6 @@ abstract class BaseMapFragment : BaseNavigationFragment(), OnMapReadyCallback {
         }
         setMapStyle()
         mapReady()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        if (::markerJob.isInitialized && !markerJob.isCancelled) markerJob.cancel()
     }
 
     protected fun displayCurrentLocationOnMap(location: Location) {
@@ -74,7 +71,7 @@ abstract class BaseMapFragment : BaseNavigationFragment(), OnMapReadyCallback {
     }
 
     protected fun displayContent(items: List<StationItem>) {
-        markerJob = GlobalScope.launch(Dispatchers.Default) {
+        lifecycleScope.launch(Dispatchers.Default) {
             items.forEach { station -> addMarker(station) }
         }
     }

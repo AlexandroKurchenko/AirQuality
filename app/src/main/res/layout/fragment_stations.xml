@@ -13,8 +13,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.main.fragments.stations.StationsFragment"
-        app:layout_optimizationLevel="standard|dimensions">
+        app:layout_optimizationLevel="standard|dimensions"
+        tools:context=".ui.main.fragments.stations.StationsFragment">
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/errorView"
@@ -27,27 +27,10 @@
             app:layout_constraintStart_toStartOf="parent"
             app:manageVisibilityErrorState="@{state}" />
 
-        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-            android:id="@+id/swipeToRefreshLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:manageVisibilityLoadedState="@{state}">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/stationsList"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:scrollbars="vertical"
-                app:layoutManager="LinearLayoutManager"
-                tools:context=".ui.main.fragments.stations.StationsFragment"
-                tools:listitem="@layout/item_stations" />
-        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+        <include
+            android:id="@+id/station_content"
+            layout="@layout/station_content"
+            app:state="@{state}"/>
 
         <ProgressBar
             android:id="@+id/loadingView"

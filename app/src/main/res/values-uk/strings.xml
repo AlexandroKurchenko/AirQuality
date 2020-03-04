@@ -16,4 +16,5 @@
     <string name="no_aqi_text">Iндекс якостi повiтря не визначенний</string>
     <string name="open_details_btn_text">Показати детальну iсторiю</string>
     <string name="no_selected_station_label">Будь ласка, виберіть станцію на карті для відображення інформації\nабо можете провести пальцем вправо для відображення списку станцій</string>
+    <string name="located_from_user">Знаходиться в %1$s кілометрів від вас</string>
 </resources>

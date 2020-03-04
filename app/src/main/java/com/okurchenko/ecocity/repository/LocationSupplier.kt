@@ -9,6 +9,9 @@ import com.google.android.gms.location.*
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
 import timber.log.Timber
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 
 class LocationListener(applicationContext: Context) :
     OnSuccessListener<Location>,
@@ -18,19 +21,21 @@ class LocationListener(applicationContext: Context) :
     private var locationProvider: FusedLocationProviderClient =
         LocationServices.getFusedLocationProviderClient(applicationContext)
 
-    init {
-        locationProvider.lastLocation
-            .addOnSuccessListener { location -> location?.run { value = location } }
-            .addOnFailureListener { ex -> Timber.i(ex) }
+
+    suspend fun getLastLocation(): Location? {
+        return suspendCoroutine { continuation ->
+            locationProvider.lastLocation
+                .addOnSuccessListener { continuation.resume(it) }
+                .addOnFailureListener { continuation.resumeWithException(it) }
+        }
     }
 
     @MainThread
     fun initLocationUpdates() {
+        locationProvider.lastLocation
+            .addOnSuccessListener { location -> location?.run { value = location } }
+            .addOnFailureListener { ex -> Timber.i(ex.toString()) }
         val request = createLocationRequest()
-        // TODO need this at all
-//        val locationSettingsRequest = LocationSettingsRequest.Builder().addLocationRequest(request).build()
-//        LocationServices.getSettingsClient(applicationContext).checkLocationSettings(locationSettingsRequest)
-
         locationProvider.requestLocationUpdates(request, locationCallBack, Looper.myLooper())
     }
 

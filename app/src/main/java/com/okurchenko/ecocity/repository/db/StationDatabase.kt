@@ -7,7 +7,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import com.okurchenko.ecocity.repository.model.StationDetails
 import com.okurchenko.ecocity.repository.model.StationItem
 
-@Database(entities = [StationItem::class, StationDetails::class], version = 4)
+@Database(entities = [StationItem::class, StationDetails::class], version = 5)
 abstract class StationDatabase : RoomDatabase() {
     abstract fun stationDao(): StationDao
     abstract fun stationDataDao(): StationDetailsDao
@@ -51,5 +51,19 @@ object Migrations {
             database.execSQL("DROP TABLE stationdataitem")
             database.execSQL("ALTER TABLE stationdataitem_new RENAME TO stationdataitem")
         }
+    }
+
+    val MIGRATION_4_5 = object : Migration(4, 5) {
+        override fun migrate(database: SupportSQLiteDatabase) {
+            database.execSQL(
+                "CREATE TABLE stationitem_new (id INTEGER NOT NULL, name TEXT NOT NULL, time TEXT NOT NULL, lat DOUBLE NOT NULL, lon DOUBLE NOT NULL, distance DOUBLE NOT NULL DEFAULT '', PRIMARY KEY(id))"
+            )
+            database.execSQL(
+                "INSERT INTO stationitem_new (id, name, time, lat , lon) SELECT id, name, time, lat, lon FROM stationitem"
+            )
+            database.execSQL("DROP TABLE stationitem")
+            database.execSQL("ALTER TABLE stationitem_new RENAME TO stationitem")
+        }
+
     }
 }

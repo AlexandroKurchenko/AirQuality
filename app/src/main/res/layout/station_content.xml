@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="com.okurchenko.ecocity.ui.main.fragments.stations.StationSort" />
+
+        <variable
+            name="actor"
+            type="com.okurchenko.ecocity.ui.main.StationListActor" />
+
+        <variable
+            name="state"
+            type="com.okurchenko.ecocity.ui.main.StationListState" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:manageVisibilityLoadedState="@{state}">
+
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipeToRefreshLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/stationsList"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:scrollbars="vertical"
+                app:layoutManager="LinearLayoutManager"
+                tools:context=".ui.main.fragments.stations.StationsFragment"
+                tools:listitem="@layout/item_stations" />
+
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/floatingActionButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/fab_margin"
+            android:layout_marginBottom="@dimen/fab_margin"
+            android:clickable="true"
+            android:focusable="true"
+            android:tag="@{StationSort.SortByDistance}"
+            app:fabSize="normal"
+            app:layout_constraintBottom_toBottomOf="@+id/swipeToRefreshLayout"
+            app:layout_constraintEnd_toEndOf="@+id/swipeToRefreshLayout"
+            app:sortAction="@{actor}"
+            app:srcCompat="@drawable/ic_sort_black_24dp" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
