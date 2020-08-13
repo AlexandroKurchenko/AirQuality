@@ -13,8 +13,8 @@ import com.okurchenko.ecocity.repository.db.DataBaseManager
 import com.okurchenko.ecocity.repository.db.StationDatabase
 import com.okurchenko.ecocity.ui.details.fragments.details.DetailsViewModel
 import com.okurchenko.ecocity.ui.details.fragments.history.HistoryViewModel
-import com.okurchenko.ecocity.ui.main.MainViewModel
-import com.okurchenko.ecocity.ui.main.fragments.map.MapViewModel
+import com.okurchenko.ecocity.ui.main.StationsViewModel
+import com.okurchenko.ecocity.ui.main.fragments.map.MapLocationViewModel
 import com.okurchenko.ecocity.utils.LocaleHelper
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -70,10 +70,10 @@ private val repoModule = module {
 }
 
 private val viewModels = module {
-    viewModel { MainViewModel() }
+    viewModel { StationsViewModel() }
     viewModel { HistoryViewModel() }
     viewModel { DetailsViewModel() }
-    viewModel { MapViewModel() }
+    viewModel { MapLocationViewModel() }
 }
 
 val appModules = listOf(applicationModule, retrofitModules, apiModule, repoModule, viewModels)

@@ -1,7 +1,9 @@
 package com.okurchenko.ecocity.repository.model
 
 open class BaseItem
+
 class EmptyItem : BaseItem()
+
 data class StationHistoryItem(
     val timeAgo: Int,
     val aqi: Int,

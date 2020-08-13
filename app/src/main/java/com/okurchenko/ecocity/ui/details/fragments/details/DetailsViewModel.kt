@@ -4,12 +4,13 @@ import androidx.lifecycle.viewModelScope
 import com.okurchenko.ecocity.repository.model.StationDetails
 import com.okurchenko.ecocity.ui.base.BaseStore
 import com.okurchenko.ecocity.ui.base.BaseViewAction
-import com.okurchenko.ecocity.ui.base.BaseViewModel
 import com.okurchenko.ecocity.ui.base.NavigationEvents
+import com.okurchenko.ecocity.ui.base.ViewModelState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-class DetailsViewModel : BaseViewModel<DetailsState>() {
+class DetailsViewModel : ViewModelState<DetailsState>() {
 
     private val store: BaseStore<DetailsState> = BaseStore(DetailsState.Empty, DetailsReducer()).also {
         it.subscribe(viewState::postValue)
@@ -25,9 +26,10 @@ class DetailsViewModel : BaseViewModel<DetailsState>() {
 
     private fun fetchHistoryDetails(stationId: Int, timeShift: Int) {
         if (viewState.value != DetailsState.DetailsItemLoading) {
-            viewModelScope.launch(Dispatchers.IO) {
+            viewModelScope.launch {
                 store.dispatch(DetailsAction.Loading)
-                val stationDetails = repository.fetchStationDetailsById(stationId, timeShift)
+                val stationDetails =
+                    withContext(Dispatchers.IO) { repository.fetchStationDetailsById(stationId, timeShift) }
                 displayStationDetails(stationDetails)
             }
         }

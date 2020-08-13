@@ -4,12 +4,14 @@ import androidx.lifecycle.viewModelScope
 import com.okurchenko.ecocity.repository.model.StationItem
 import com.okurchenko.ecocity.ui.base.BaseStore
 import com.okurchenko.ecocity.ui.base.BaseViewAction
-import com.okurchenko.ecocity.ui.base.BaseViewModel
 import com.okurchenko.ecocity.ui.base.NavigationEvents
+import com.okurchenko.ecocity.ui.base.ViewModelState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-open class MainViewModel : BaseViewModel<StationListState>() {
+
+class StationsViewModel : ViewModelState<StationListState>() {
 
     private val store: BaseStore<StationListState> = BaseStore(StationListState.Empty, StationListReducer())
 
@@ -29,8 +31,8 @@ open class MainViewModel : BaseViewModel<StationListState>() {
     private fun handleRefreshAction() {
         if (viewState.value != StationListState.Loading) {
             store.dispatch(StationListAction.Loading)
-            viewModelScope.launch(Dispatchers.IO) {
-                val stationItems = repository.fetchAllStations()
+            viewModelScope.launch {
+                val stationItems = withContext(Dispatchers.IO) { repository.fetchAllStations() }
                 displayResults(stationItems)
             }
         }

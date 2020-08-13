@@ -38,7 +38,6 @@ sealed class HistoryListAction : BaseAction {
 class HistoryListActor(private val emit: (HistoryListViewAction) -> Unit) {
     fun fetchHistoryData(id: Int, fromTimeShift: Int, toTimeShift: Int) =
         emit(HistoryListViewAction.FetchHistoryList(id, fromTimeShift, toTimeShift))
-
     fun clickItem(timeShift: Int) = emit(HistoryListViewAction.DetailsClick(timeShift))
     fun openMain() = emit(HistoryListViewAction.OpenMain)
 }

@@ -42,7 +42,7 @@ abstract class BaseMapFragment : BaseNavigationFragment(), OnMapReadyCallback {
 
     override fun onPause() {
         super.onPause()
-        if (::markerJob.isInitialized && !markerJob.isCancelled) markerJob.cancel()
+        if (::markerJob.isInitialized && markerJob.isCancelled.not()) markerJob.cancel()
     }
 
     protected fun displayCurrentLocationOnMap(location: Location) {
@@ -75,6 +75,10 @@ abstract class BaseMapFragment : BaseNavigationFragment(), OnMapReadyCallback {
     }
 
     protected fun displayContent(items: List<StationItem>) {
+        if (::map.isInitialized.not()) {
+            Timber.d("Map is not initialized")
+            return
+        }
         markerJob = GlobalScope.launch(Dispatchers.Default) {
             items.forEach { station -> addMarker(station) }
         }
@@ -90,7 +94,7 @@ abstract class BaseMapFragment : BaseNavigationFragment(), OnMapReadyCallback {
             .title(station.name)
             .icon(BitmapDescriptorFactory.fromBitmap(image))
         withContext(Dispatchers.Main) {
-            if (::map.isInitialized) map.addMarker(options).tag = station
+            map.addMarker(options).tag = station
         }
     }
 

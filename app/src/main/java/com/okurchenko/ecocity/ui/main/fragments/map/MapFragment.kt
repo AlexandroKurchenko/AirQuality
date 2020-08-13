@@ -15,6 +15,8 @@ import com.okurchenko.ecocity.repository.model.StationItem
 import com.okurchenko.ecocity.ui.main.MainActivity
 import com.okurchenko.ecocity.ui.main.StationListActor
 import com.okurchenko.ecocity.ui.main.StationListState
+import com.okurchenko.ecocity.ui.main.StationsViewModel
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 private const val REQUEST_CODE_FOREGROUND = 1567
@@ -22,7 +24,8 @@ private const val CLICKED_MARKER = "CLICKED_MARKER"
 
 class MapFragment : BaseMapFragment() {
 
-    private val viewModel by viewModel<MapViewModel>()
+    private val stationsViewModel by sharedViewModel<StationsViewModel>()
+    private val mapLocationViewModel by viewModel<MapLocationViewModel>()
     private lateinit var binding: FragmentMapBinding
     private lateinit var actor: StationListActor
 
@@ -52,7 +55,7 @@ class MapFragment : BaseMapFragment() {
     override fun onResume() {
         super.onResume()
         binding.mapView.onResume()
-        viewModel.getNavigationEvents().observe(viewLifecycleOwner, navObserver)
+        stationsViewModel.getNavigationEvents().observe(viewLifecycleOwner, navObserver)
         if (::actor.isInitialized) actor.requestLocationUpdate()
     }
 
@@ -74,7 +77,7 @@ class MapFragment : BaseMapFragment() {
     override fun onPause() {
         super.onPause()
         binding.mapView.onPause()
-        viewModel.getNavigationEvents().removeObserver(navObserver)
+        stationsViewModel.getNavigationEvents().removeObserver(navObserver)
         if (::actor.isInitialized) actor.stopLocationUpdate()
     }
 
@@ -96,7 +99,7 @@ class MapFragment : BaseMapFragment() {
     }
 
     override fun mapReady() {
-        actor = StationListActor(viewModel::takeAction)
+        actor = StationListActor(stationsViewModel::takeAction)
         subscribeToViewModelUpdate()
         requestPermission()
     }
@@ -106,13 +109,13 @@ class MapFragment : BaseMapFragment() {
     }
 
     private fun subscribeToViewModelUpdate() {
-        viewModel.getState().observe(viewLifecycleOwner, Observer { state ->
+        stationsViewModel.getState().observe(viewLifecycleOwner, Observer { state ->
             binding.state = state
             if (state is StationListState.StationItemsLoaded) {
                 displayContent(state.data)
             }
         })
-        viewModel.getLocationUpdate().observe(viewLifecycleOwner, Observer { updateLocation(it) })
+        mapLocationViewModel.getLocationUpdate().observe(viewLifecycleOwner, Observer { updateLocation(it) })
     }
 
     private fun requestPermission() {

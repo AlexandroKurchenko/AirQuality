@@ -11,14 +11,14 @@ import com.okurchenko.ecocity.databinding.FragmentStationsBinding
 import com.okurchenko.ecocity.repository.model.StationItem
 import com.okurchenko.ecocity.ui.base.BaseNavigationFragment
 import com.okurchenko.ecocity.ui.base.ItemOffsetDecoration
-import com.okurchenko.ecocity.ui.main.MainViewModel
 import com.okurchenko.ecocity.ui.main.StationListActor
 import com.okurchenko.ecocity.ui.main.StationListState
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import com.okurchenko.ecocity.ui.main.StationsViewModel
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class StationsFragment : BaseNavigationFragment() {
 
-    private val viewModel by viewModel<MainViewModel>()
+    private val stationsViewModel by sharedViewModel<StationsViewModel>()
     private lateinit var adapter: StationsAdapter
     private lateinit var binding: FragmentStationsBinding
 
@@ -30,7 +30,7 @@ class StationsFragment : BaseNavigationFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val actor = StationListActor(viewModel::takeAction)
+        val actor = StationListActor(stationsViewModel::takeAction)
         binding.swipeToRefreshLayout.setOnRefreshListener {
             actor.refresh()
             binding.swipeToRefreshLayout.isRefreshing = false
@@ -43,16 +43,16 @@ class StationsFragment : BaseNavigationFragment() {
 
     override fun onResume() {
         super.onResume()
-        viewModel.getNavigationEvents().observe(viewLifecycleOwner, navObserver)
+        stationsViewModel.getNavigationEvents().observe(viewLifecycleOwner, navObserver)
     }
 
     override fun onPause() {
         super.onPause()
-        viewModel.getNavigationEvents().removeObserver(navObserver)
+        stationsViewModel.getNavigationEvents().removeObserver(navObserver)
     }
 
     private fun subscribeToViewModelUpdate() {
-        viewModel.getState().observe(viewLifecycleOwner, Observer { state ->
+        stationsViewModel.getState().observe(viewLifecycleOwner, Observer { state ->
             binding.state = state
             if (state is StationListState.StationItemsLoaded) {
                 displayContent(state.data)

@@ -5,12 +5,13 @@ import androidx.lifecycle.viewModelScope
 import com.okurchenko.ecocity.repository.model.StationHistoryItem
 import com.okurchenko.ecocity.ui.base.BaseStore
 import com.okurchenko.ecocity.ui.base.BaseViewAction
-import com.okurchenko.ecocity.ui.base.BaseViewModel
 import com.okurchenko.ecocity.ui.base.NavigationEvents
+import com.okurchenko.ecocity.ui.base.ViewModelState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-class HistoryViewModel : BaseViewModel<HistoryListState>() {
+class HistoryViewModel : ViewModelState<HistoryListState>() {
 
     private val tempHistoryItems = MutableLiveData<MutableSet<StationHistoryItem>>(mutableSetOf())
     private val store: BaseStore<HistoryListState> = BaseStore(HistoryListState.Empty, HistoryListReducer())
@@ -28,9 +29,15 @@ class HistoryViewModel : BaseViewModel<HistoryListState>() {
 
     private fun fetchHistoryList(id: Int, fromTimeShift: Int, toTimeShift: Int) {
         if (viewState.value != HistoryListState.HistoryItemLoading) {
-            viewModelScope.launch(Dispatchers.IO) {
+            viewModelScope.launch {
                 store.dispatch(HistoryListAction.Loading)
-                val items = repository.fetchHistoryItemsByStationId(id, fromTimeShift, toTimeShift)
+                val items = withContext(Dispatchers.IO) {
+                    repository.fetchHistoryItemsByStationId(
+                        id,
+                        fromTimeShift,
+                        toTimeShift
+                    )
+                }
                 displayHistoryListResult(items)
             }
         }
