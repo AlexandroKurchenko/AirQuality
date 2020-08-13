@@ -1,5 +1,6 @@
 package com.okurchenko.ecocity.ui.main.fragments.map
 
+import android.annotation.SuppressLint
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -37,7 +38,6 @@ abstract class BaseMapFragment : BaseNavigationFragment(), OnMapReadyCallback {
         }
         setMapStyle()
         mapReady()
-
     }
 
     override fun onPause() {
@@ -103,6 +103,7 @@ abstract class BaseMapFragment : BaseNavigationFragment(), OnMapReadyCallback {
         }
     }
 
+    @SuppressLint("MissingPermission")
     protected fun setLocationEnabled() {
         if (::map.isInitialized) map.isMyLocationEnabled = true
     }

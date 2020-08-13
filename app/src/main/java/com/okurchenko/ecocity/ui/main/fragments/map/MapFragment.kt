@@ -20,7 +20,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 private const val REQUEST_CODE_FOREGROUND = 1567
 private const val CLICKED_MARKER = "CLICKED_MARKER"
 
-class MapFragment2 : BaseMapFragment() {
+class MapFragment : BaseMapFragment() {
 
     private val viewModel by viewModel<MapViewModel>()
     private lateinit var binding: FragmentMapBinding

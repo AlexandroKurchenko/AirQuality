@@ -11,7 +11,7 @@ sealed class StationListState : BaseState {
     object Loading : StationListState()
     object Error : StationListState()
     class StationItemsLoaded(val data: List<StationItem>) : StationListState()
-    class LocationUpdated(val location: Location) : StationListState()
+    object LocationUpdated : StationListState()
     object Empty : StationListState()
 }
 
@@ -21,7 +21,7 @@ class StationListReducer : Reducer<StationListState>() {
             is StationListAction.Loading -> StationListState.Loading
             is StationListAction.FailLoading -> StationListState.Error
             is StationListAction.ItemLoaded -> StationListState.StationItemsLoaded(action.items)
-            is StationListAction.LocationUpdate -> StationListState.LocationUpdated(action.location)
+            is StationListAction.LocationUpdate -> StationListState.LocationUpdated
             else -> state
         }
     }

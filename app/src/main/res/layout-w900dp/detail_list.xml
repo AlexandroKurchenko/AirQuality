@@ -24,7 +24,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline"
         app:layout_constraintTop_toTopOf="parent"
-        tools:context=".ui.details.HistoryDetailsActivity" />
+        tools:context=".ui.details.HistoryDetailsActivity"
+        tools:ignore="InconsistentLayout" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"

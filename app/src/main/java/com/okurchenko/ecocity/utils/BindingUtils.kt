@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.view.View
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.databinding.BindingAdapter
 import com.okurchenko.ecocity.R
 import com.okurchenko.ecocity.ui.main.StationListState
@@ -15,7 +16,7 @@ fun visibleIfNotNull(view: TextView, source: String?) {
 
 @BindingAdapter("aqiBackground")
 fun setAqiBackground(view: TextView, source: Int) {
-    val drawable = view.context.resources.getDrawable(R.drawable.circle, null)
+    val drawable = ResourcesCompat.getDrawable(view.resources, R.drawable.circle, null)
     val resource = when (getAqiIndex(source)) {
         0 -> R.color.aqi_good
         1 -> R.color.aqi_moderate
@@ -25,7 +26,7 @@ fun setAqiBackground(view: TextView, source: Int) {
         5 -> R.color.aqi_hazardous
         else -> android.R.color.darker_gray
     }
-    drawable.setTint(ContextCompat.getColor(view.context, resource))
+    drawable?.setTint(ContextCompat.getColor(view.context, resource))
     view.background = drawable
 }
 
