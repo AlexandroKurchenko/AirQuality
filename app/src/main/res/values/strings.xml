@@ -16,4 +16,5 @@
     <string name="no_aqi_text">Air Quality Index not provided</string>
     <string name="open_details_btn_text">Show history details</string>
     <string name="no_selected_station_label">Please select station on the map to display information\nor you can swipe right to List of station</string>
+    <string name="retryLabel">Retry</string>
 </resources>

@@ -1,6 +1,8 @@
 package com.okurchenko.ecocity.repository.db
 
+import androidx.room.withTransaction
 import com.okurchenko.ecocity.repository.model.StationDetails
+import com.okurchenko.ecocity.repository.model.StationHistoryItem
 import com.okurchenko.ecocity.repository.model.StationItem
 import com.okurchenko.ecocity.utils.convertDataFormat
 import com.okurchenko.ecocity.utils.isNewItemOlder
@@ -16,9 +18,14 @@ class DataBaseManager(private val db: StationDatabase, private val currentLocale
     }
 
     fun getAllHistory(stationId: Int, timeShift: Int) =
-        db.stationDataDao().getAllHistoryByStationId(stationId, timeShift)
+        db.stationDataDao().getHistoryByStationIdAndTimeShift(stationId, timeShift)
+
+    fun getAllHistoryPaging(stationId: Int) =
+        db.stationDataDao().getAllHistoryByStationIdPaging(stationId)
 
     fun getAllStationItems() = db.stationDao().getAllStations()
+
+    fun getHistoryCountByStationId(stationId: Int) = db.stationDataDao().getHistoryCountByStationId(stationId)
 
     internal fun sortAllStation(stations: List<StationItem>) = stations.map { stationItem ->
         stationItem.copy(time = convertDataFormat(stationItem.time, currentLocale))
@@ -33,6 +40,10 @@ class DataBaseManager(private val db: StationDatabase, private val currentLocale
         }
     }
 
+    suspend fun loadInTransactionContext(operation: () -> Unit) {
+        db.withTransaction { operation.invoke() }
+    }
+
     private fun isNeedUpdateStationData(insertedResultValue: Long): Boolean = insertedResultValue == (-1).toLong()
 
     private fun isNeedUpdate(insertedResultValue: Long, networkItem: StationItem): Boolean {
@@ -43,6 +54,10 @@ class DataBaseManager(private val db: StationDatabase, private val currentLocale
         } else {
             false
         }
+    }
+
+    fun saveStationHistoryItems(stationHistoryItem: StationHistoryItem) {
+
     }
 
 }

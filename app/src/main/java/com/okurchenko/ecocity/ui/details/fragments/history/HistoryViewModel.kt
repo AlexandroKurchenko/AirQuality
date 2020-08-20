@@ -1,59 +1,46 @@
 package com.okurchenko.ecocity.ui.details.fragments.history
 
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import androidx.paging.*
 import com.okurchenko.ecocity.repository.model.StationHistoryItem
-import com.okurchenko.ecocity.ui.base.BaseStore
+import com.okurchenko.ecocity.repository.utils.DetailsToPreviewConverter
 import com.okurchenko.ecocity.ui.base.BaseViewAction
+import com.okurchenko.ecocity.ui.base.BaseViewModel
 import com.okurchenko.ecocity.ui.base.NavigationEvents
-import com.okurchenko.ecocity.ui.base.ViewModelState
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
-class HistoryViewModel : ViewModelState<HistoryListState>() {
+private const val ID_KEY = "ID_KEY"
+private const val NETWORK_PAGE_SIZE = 4
 
-    private val tempHistoryItems = MutableLiveData<MutableSet<StationHistoryItem>>(mutableSetOf())
-    private val store: BaseStore<HistoryListState> = BaseStore(HistoryListState.Empty, HistoryListReducer())
-        .also { it.subscribe(viewState::postValue) }
+class HistoryViewModel(private val savedStateHandle: SavedStateHandle) : BaseViewModel() {
+
+    private lateinit var historyData: Flow<PagingData<StationHistoryItem>>
+
+    // NOTE paging source factory, remoteMediator must all use same type(in my case it was StationDetails)
+    fun getAllHistoryItems(queryStationId: Int): Flow<PagingData<StationHistoryItem>> {
+        val lastStationId = savedStateHandle.get<Int>(ID_KEY)
+        if (lastStationId != null && queryStationId == lastStationId && ::historyData.isInitialized) {
+            return historyData
+        }
+        historyData = Pager(
+            config = PagingConfig(pageSize = NETWORK_PAGE_SIZE, enablePlaceholders = true),
+            remoteMediator = HistoryPagingRemoteMediator(queryStationId, repository),
+            pagingSourceFactory = { repository.getAllHistory(queryStationId) }
+        )
+            .flow
+            .map { historyDetails -> historyDetails.map { DetailsToPreviewConverter.convertData(it) } }
+            .cachedIn(viewModelScope)
+        savedStateHandle.set(ID_KEY, queryStationId)
+        return historyData
+    }
 
     override fun takeAction(action: BaseViewAction) {
         when (val historyAction = action as HistoryListViewAction) {
-            is HistoryListViewAction.FetchHistoryList ->
-                fetchHistoryList(historyAction.id, historyAction.fromTimeShift, historyAction.toTimeShift)
             is HistoryListViewAction.DetailsClick ->
                 processNavigationEvent(NavigationEvents.OpenDetailsFragment(historyAction.timeShift))
             is HistoryListViewAction.OpenMain -> processNavigationEvent(NavigationEvents.OpenMainActivity)
         }
-    }
-
-    private fun fetchHistoryList(id: Int, fromTimeShift: Int, toTimeShift: Int) {
-        if (viewState.value != HistoryListState.HistoryItemLoading) {
-            viewModelScope.launch {
-                store.dispatch(HistoryListAction.Loading)
-                val items = withContext(Dispatchers.IO) {
-                    repository.fetchHistoryItemsByStationId(
-                        id,
-                        fromTimeShift,
-                        toTimeShift
-                    )
-                }
-                displayHistoryListResult(items)
-            }
-        }
-    }
-
-    private fun displayHistoryListResult(items: List<StationHistoryItem>) {
-        if (items.isNotEmpty()) {
-            getAllHistoryItems(items)?.let { store.dispatch(HistoryListAction.ItemsLoaded(it)) }
-        } else {
-            store.dispatch(HistoryListAction.FailLoading)
-        }
-    }
-
-    private fun getAllHistoryItems(items: List<StationHistoryItem>): List<StationHistoryItem>? {
-        val allItems = tempHistoryItems.value
-        allItems?.addAll(items)
-        return allItems?.toList()
     }
 }

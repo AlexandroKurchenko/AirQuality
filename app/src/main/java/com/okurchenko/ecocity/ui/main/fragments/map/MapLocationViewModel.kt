@@ -4,11 +4,13 @@ import com.okurchenko.ecocity.repository.LocationListener
 import com.okurchenko.ecocity.ui.base.BaseViewAction
 import com.okurchenko.ecocity.ui.base.BaseViewModel
 import com.okurchenko.ecocity.ui.main.StationListViewAction
-import org.koin.core.context.GlobalContext
+import org.koin.core.context.KoinContextHandler
 
 class MapLocationViewModel : BaseViewModel() {
 
-    private val location: LocationListener by lazy { GlobalContext.get().koin.get<LocationListener>() }
+    private val location: LocationListener by lazy {
+        KoinContextHandler.get().get<LocationListener>()
+    }
 
     override fun takeAction(action: BaseViewAction) {
         when (action) {

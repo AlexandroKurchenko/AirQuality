@@ -1,6 +1,7 @@
 package com.okurchenko.ecocity.repository.db
 
 import androidx.lifecycle.LiveData
+import androidx.paging.PagingSource
 import androidx.room.*
 import com.okurchenko.ecocity.repository.model.StationDetails
 
@@ -10,7 +11,13 @@ interface StationDetailsDao {
     fun getAllStationData(): LiveData<List<StationDetails>>
 
     @Query("SELECT * FROM stationdetails WHERE stationId = :id AND hoursAgo = :timeShift")
-    fun getAllHistoryByStationId(id: Int, timeShift: Int): StationDetails?
+    fun getHistoryByStationIdAndTimeShift(id: Int, timeShift: Int): StationDetails?
+
+    @Query("SELECT * FROM stationdetails WHERE stationId = :id")
+    fun getAllHistoryByStationIdPaging(id: Int): PagingSource<Int, StationDetails>
+
+    @Query("SELECT COUNT (*) FROM stationdetails WHERE stationId = :id")
+    fun getHistoryCountByStationId(id: Int): Int
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insertStationDataItems(stationData: StationDetails): Long

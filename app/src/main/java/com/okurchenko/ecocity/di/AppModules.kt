@@ -2,6 +2,7 @@ package com.okurchenko.ecocity.di
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.lifecycle.SavedStateHandle
 import androidx.room.Room
 import com.google.gson.GsonBuilder
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
@@ -71,7 +72,7 @@ private val repoModule = module {
 
 private val viewModels = module {
     viewModel { StationsViewModel() }
-    viewModel { HistoryViewModel() }
+    viewModel { (handle: SavedStateHandle) -> HistoryViewModel(handle) }
     viewModel { DetailsViewModel() }
     viewModel { MapLocationViewModel() }
 }
