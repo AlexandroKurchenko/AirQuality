@@ -9,7 +9,7 @@ import org.koin.core.context.KoinContextHandler
 class MapLocationViewModel : BaseViewModel() {
 
     private val location: LocationListener by lazy {
-        KoinContextHandler.get().get<LocationListener>()
+        KoinContextHandler.get().get()
     }
 
     override fun takeAction(action: BaseViewAction) {

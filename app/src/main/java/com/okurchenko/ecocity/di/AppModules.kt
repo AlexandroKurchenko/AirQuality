@@ -35,7 +35,8 @@ private val applicationModule = module {
     }
 
     single {
-        Room.databaseBuilder(androidContext(), StationDatabase::class.java, StationDatabase::class.java.name).build()
+        val dbClass = StationDatabase::class.java
+        Room.databaseBuilder(androidContext(), dbClass, dbClass.name).build()
     }
 
     single { LocaleHelper(androidContext()).getLocale() }
@@ -62,13 +63,9 @@ private val retrofitModules = module {
     }
 }
 
-private val apiModule = module {
-    single { get<Retrofit>().create(StationApi::class.java) }
-}
+private val apiModule = module { single { get<Retrofit>().create(StationApi::class.java) } }
 
-private val repoModule = module {
-    single { StationRepositoryImpl(get(), get(), get()) }
-}
+private val repoModule = module { single { StationRepositoryImpl(get(), get(), get()) } }
 
 private val viewModels = module {
     viewModel { StationsViewModel() }

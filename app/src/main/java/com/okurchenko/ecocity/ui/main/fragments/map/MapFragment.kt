@@ -1,13 +1,12 @@
 package com.okurchenko.ecocity.ui.main.fragments.map
 
 import android.Manifest
-import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.Observer
 import com.okurchenko.ecocity.R
 import com.okurchenko.ecocity.databinding.FragmentMapBinding
@@ -19,7 +18,6 @@ import com.okurchenko.ecocity.ui.main.StationsViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-private const val REQUEST_CODE_FOREGROUND = 1567
 private const val CLICKED_MARKER = "CLICKED_MARKER"
 
 class MapFragment : BaseMapFragment() {
@@ -28,6 +26,11 @@ class MapFragment : BaseMapFragment() {
     private val mapLocationViewModel by viewModel<MapLocationViewModel>()
     private lateinit var binding: FragmentMapBinding
     private lateinit var actor: StationListActor
+    private lateinit var mapActoractor: StationListActor
+    private val activityResultLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranded ->
+            if (isGranded) setLocationEnabled()
+        }
 
     override fun onStart() {
         super.onStart()
@@ -39,7 +42,7 @@ class MapFragment : BaseMapFragment() {
         binding.lifecycleOwner = this
         binding.mapView.onCreate(savedInstanceState)
         binding.mapInfoWindow.openHistoryDetails.setOnClickListener { view ->
-            view.tag?.run { actor.clickItem(view.tag as Int) }
+            view.tag?.run { if (::actor.isInitialized) actor.clickItem(view.tag as Int) }
         }
         binding.zoomIn.setOnClickListener { zoomIn() }
         binding.zoomOut.setOnClickListener { zoomOut() }
@@ -49,6 +52,8 @@ class MapFragment : BaseMapFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        actor = StationListActor(stationsViewModel::takeAction)
+        mapActoractor = StationListActor (mapLocationViewModel::takeAction )
         binding.mapView.getMapAsync(this)
     }
 
@@ -56,7 +61,9 @@ class MapFragment : BaseMapFragment() {
         super.onResume()
         binding.mapView.onResume()
         stationsViewModel.getNavigationEvents().observe(viewLifecycleOwner, navObserver)
-        if (::actor.isInitialized) actor.requestLocationUpdate()
+        if (::mapActoractor.isInitialized) {
+            mapActoractor.requestLocationUpdate()
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -78,7 +85,9 @@ class MapFragment : BaseMapFragment() {
         super.onPause()
         binding.mapView.onPause()
         stationsViewModel.getNavigationEvents().removeObserver(navObserver)
-        if (::actor.isInitialized) actor.stopLocationUpdate()
+        if (::mapActoractor.isInitialized) {
+            mapActoractor.stopLocationUpdate()
+        }
     }
 
     override fun onStop() {
@@ -91,17 +100,10 @@ class MapFragment : BaseMapFragment() {
         binding.mapView.onDestroy()
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        if (requestCode == REQUEST_CODE_FOREGROUND) {
-            handlePermission(grantResults)
-        }
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    }
-
     override fun mapReady() {
-        actor = StationListActor(stationsViewModel::takeAction)
+
         subscribeToViewModelUpdate()
-        requestPermission()
+        activityResultLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
     }
 
     override fun markerClick(station: StationItem) {
@@ -109,39 +111,13 @@ class MapFragment : BaseMapFragment() {
     }
 
     private fun subscribeToViewModelUpdate() {
-        stationsViewModel.getState().observe(viewLifecycleOwner, Observer { state ->
+        stationsViewModel.getState().observe(viewLifecycleOwner, { state ->
             binding.state = state
             if (state is StationListState.StationItemsLoaded) {
                 displayContent(state.data)
             }
         })
         mapLocationViewModel.getLocationUpdate().observe(viewLifecycleOwner, Observer { updateLocation(it) })
-    }
-
-    private fun requestPermission() {
-        if (hasLocationPermission()) {
-            permissionGranted()
-        } else {
-            requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), REQUEST_CODE_FOREGROUND)
-        }
-    }
-
-    private fun hasLocationPermission(): Boolean =
-        context?.run {
-            ContextCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
-        } ?: false
-
-    private fun handlePermission(grantResults: IntArray) {
-        if (grantResults.isNotEmpty() && grantResults.first() == PackageManager.PERMISSION_GRANTED) {
-            permissionGranted()
-        }
-    }
-
-    private fun permissionGranted() {
-        setLocationEnabled()
     }
 
     private fun updateLocation(it: Location) {

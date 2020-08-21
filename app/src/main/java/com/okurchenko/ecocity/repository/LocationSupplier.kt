@@ -1,5 +1,6 @@
 package com.okurchenko.ecocity.repository
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.location.Location
 import android.os.Looper
@@ -18,12 +19,14 @@ class LocationListener(applicationContext: Context) :
     private var locationProvider: FusedLocationProviderClient =
         LocationServices.getFusedLocationProviderClient(applicationContext)
 
+
     init {
         locationProvider.lastLocation
             .addOnSuccessListener { location -> location?.run { value = location } }
             .addOnFailureListener { ex -> Timber.i(ex) }
     }
 
+    @SuppressLint("MissingPermission")
     @MainThread
     fun initLocationUpdates() {
         val request = createLocationRequest()

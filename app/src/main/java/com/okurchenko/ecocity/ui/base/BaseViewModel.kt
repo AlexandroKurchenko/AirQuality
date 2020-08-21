@@ -3,9 +3,7 @@ package com.okurchenko.ecocity.ui.base
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.hadilq.liveevent.LiveEvent
-import com.okurchenko.ecocity.repository.LocationListener
 import com.okurchenko.ecocity.repository.StationRepositoryImpl
-import org.koin.core.context.GlobalContext
 import org.koin.core.context.KoinContextHandler
 
 abstract class BaseViewModel : ViewModel() {
