@@ -8,6 +8,7 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.android.material.tabs.TabLayoutMediator.TabConfigurationStrategy
 import com.okurchenko.ecocity.R
+import com.okurchenko.ecocity.databinding.ActivityMainBinding
 import com.okurchenko.ecocity.ui.base.EventProcessor
 import com.okurchenko.ecocity.ui.base.NavigationEvents
 import com.okurchenko.ecocity.ui.details.HistoryDetailsActivity
@@ -15,32 +16,32 @@ import com.okurchenko.ecocity.ui.details.HistoryDetailsActivity
 class MainActivity : AppCompatActivity(), EventProcessor {
 
     private val tabTitles = arrayOf(R.string.map_tab_text, R.string.list_tab_text)
-    private lateinit var viewPager2: ViewPager2
-
-    fun setViewPager2UserInputEnabled(isUserInputEnabled: Boolean) {
-        if (::viewPager2.isInitialized) viewPager2.isUserInputEnabled = isUserInputEnabled
-    }
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         initPager()
-    }
-
-    private fun initPager() {
-        viewPager2 = findViewById<ViewPager2>(R.id.view_pager).apply {
-            adapter = ViewPagerAdapter(this@MainActivity, tabTitles)
-        }
-        val tabLayout: TabLayout = findViewById(R.id.tabs)
-        TabLayoutMediator(tabLayout, viewPager2, TabConfigurationStrategy { tab: TabLayout.Tab, position: Int ->
-            tab.setText(tabTitles[position])
-        }).attach()
     }
 
     override fun processEvent(event: NavigationEvents) {
         if (event is NavigationEvents.OpenHistoryActivity) {
             openStationDetailsScreen(event.id)
         }
+    }
+
+    fun setViewPager2UserInputEnabled(isUserInputEnabled: Boolean) {
+        binding.viewPager.isUserInputEnabled = isUserInputEnabled
+    }
+
+    private fun initPager() {
+        binding.viewPager.apply {
+            adapter = ViewPagerAdapter(this@MainActivity, tabTitles)
+        }
+        TabLayoutMediator(binding.tabs, binding.viewPager) { tab: TabLayout.Tab, position: Int ->
+            tab.setText(tabTitles[position])
+        }.attach()
     }
 
     private fun openStationDetailsScreen(id: Int) {

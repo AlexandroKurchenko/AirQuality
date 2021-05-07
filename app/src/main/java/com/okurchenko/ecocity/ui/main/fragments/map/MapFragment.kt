@@ -7,8 +7,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.Observer
 import com.okurchenko.ecocity.R
 import com.okurchenko.ecocity.databinding.FragmentMapBinding
 import com.okurchenko.ecocity.repository.model.StationItem
@@ -17,7 +17,6 @@ import com.okurchenko.ecocity.ui.main.StationListActor
 import com.okurchenko.ecocity.ui.main.StationListState
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-private const val REQUEST_CODE_FOREGROUND = 1567
 private const val CLICKED_MARKER = "CLICKED_MARKER"
 
 class MapFragment : BaseMapFragment() {
@@ -25,13 +24,27 @@ class MapFragment : BaseMapFragment() {
     private val viewModel by viewModel<MapViewModel>()
     private lateinit var binding: FragmentMapBinding
     private lateinit var actor: StationListActor
+    private val requestPermissionLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted: Boolean ->
+            if (isGranted) {
+                permissionGranted()
+            } else {
+                requestPermission()
+            }
+        }
 
     override fun onStart() {
         super.onStart()
         binding.mapView.onStart()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         binding = bindContentView(inflater, R.layout.fragment_map, container)
         binding.lifecycleOwner = this@MapFragment.viewLifecycleOwner
         binding.mapView.onCreate(savedInstanceState)
@@ -88,13 +101,6 @@ class MapFragment : BaseMapFragment() {
         binding.mapView.onDestroy()
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        if (requestCode == REQUEST_CODE_FOREGROUND) {
-            handlePermission(grantResults)
-        }
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    }
-
     override fun mapReady() {
         actor = StationListActor(viewModel::takeAction)
         subscribeToViewModelUpdate()
@@ -106,20 +112,20 @@ class MapFragment : BaseMapFragment() {
     }
 
     private fun subscribeToViewModelUpdate() {
-        viewModel.getState().observe(viewLifecycleOwner, Observer { state ->
+        viewModel.getState().observe(viewLifecycleOwner, { state ->
             binding.state = state
             if (state is StationListState.StationItemsLoaded) {
                 displayContent(state.data)
             }
         })
-        viewModel.getLocationUpdate().observe(viewLifecycleOwner, Observer { updateLocation(it) })
+        viewModel.getLocationUpdate().observe(viewLifecycleOwner, { updateLocation(it) })
     }
 
     private fun requestPermission() {
         if (hasLocationPermission()) {
             permissionGranted()
         } else {
-            requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), REQUEST_CODE_FOREGROUND)
+            requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
         }
     }
 
@@ -131,11 +137,6 @@ class MapFragment : BaseMapFragment() {
             ) == PackageManager.PERMISSION_GRANTED
         } ?: false
 
-    private fun handlePermission(grantResults: IntArray) {
-        if (grantResults.isNotEmpty() && grantResults.first() == PackageManager.PERMISSION_GRANTED) {
-            permissionGranted()
-        }
-    }
 
     private fun permissionGranted() {
         setLocationEnabled()

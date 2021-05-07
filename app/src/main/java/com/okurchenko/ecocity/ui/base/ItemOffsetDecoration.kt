@@ -15,8 +15,8 @@ class ItemOffsetDecoration : RecyclerView.ItemDecoration() {
     ) {
         val adapter = parent.adapter ?: return
         val vh = parent.findContainingViewHolder(view) ?: return
-        val isFirst = vh.adapterPosition == 0
-        val isLast = vh.adapterPosition == adapter.itemCount - 1
+        val isFirst = vh.bindingAdapterPosition == 0
+        val isLast = vh.bindingAdapterPosition == adapter.itemCount - 1
         val spacing = view.context.resources.getDimensionPixelOffset(R.dimen.default_spacing_medium)
         when {
             isFirst -> outRect.set(spacing, spacing, spacing, spacing / 2)

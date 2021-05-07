@@ -2,14 +2,13 @@ package com.okurchenko.ecocity.ui.details
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import com.okurchenko.ecocity.R
+import com.okurchenko.ecocity.databinding.ActivityHistoryDetailBinding
 import com.okurchenko.ecocity.ui.base.EventProcessor
 import com.okurchenko.ecocity.ui.base.NavigationEvents
 import com.okurchenko.ecocity.ui.base.OnBackPressed
 import com.okurchenko.ecocity.ui.details.fragments.details.DetailsFragment
 import com.okurchenko.ecocity.ui.details.fragments.history.HistoryFragment
-import kotlinx.android.synthetic.main.detail_list.*
 
 class HistoryDetailsActivity : AppCompatActivity(), EventProcessor {
 
@@ -18,15 +17,18 @@ class HistoryDetailsActivity : AppCompatActivity(), EventProcessor {
     }
 
     private var tabletMode: Boolean = false
+    private lateinit var binding: ActivityHistoryDetailBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_history_detail)
-        val toolbar: Toolbar = findViewById(R.id.toolBar)
-        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp)
-        setSupportActionBar(toolbar)
+        binding = ActivityHistoryDetailBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        binding.toolBar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp)
+        setSupportActionBar(binding.toolBar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        if (fragmentDetails != null) {
+
+
+        if (binding.detailsListId.fragmentDetails != null) {
             tabletMode = true
         }
         if (savedInstanceState == null) {
@@ -65,7 +67,11 @@ class HistoryDetailsActivity : AppCompatActivity(), EventProcessor {
             val container = if (tabletMode) R.id.fragmentDetails else R.id.fragmentContainer
             supportFragmentManager.beginTransaction()
                 .setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
-                .replace(container, DetailsFragment.newInstance(stationId, timeShift), DetailsFragment::class.java.name)
+                .replace(
+                    container,
+                    DetailsFragment.newInstance(stationId, timeShift),
+                    DetailsFragment::class.java.name
+                )
                 .commitNow()
         }
 

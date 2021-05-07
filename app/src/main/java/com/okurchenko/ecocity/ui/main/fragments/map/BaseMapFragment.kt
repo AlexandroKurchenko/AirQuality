@@ -1,5 +1,6 @@
 package com.okurchenko.ecocity.ui.main.fragments.map
 
+import android.annotation.SuppressLint
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -49,7 +50,9 @@ abstract class BaseMapFragment : BaseNavigationFragment(), OnMapReadyCallback {
         }
         if (::map.isInitialized) {
             if (::currentMarker.isInitialized) currentMarker.remove()
-            currentMarker = map.addMarker(options)
+            map.addMarker(options)?.let {
+                currentMarker = it
+            }
         }
     }
 
@@ -65,7 +68,12 @@ abstract class BaseMapFragment : BaseNavigationFragment(), OnMapReadyCallback {
         if (!isCameraMovedToMyLocation) {
             val zoomLevel = 5f
             val currentLocation = LatLng(location.latitude, location.longitude)
-            if (::map.isInitialized) map.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, zoomLevel))
+            if (::map.isInitialized) map.moveCamera(
+                CameraUpdateFactory.newLatLngZoom(
+                    currentLocation,
+                    zoomLevel
+                )
+            )
             isCameraMovedToMyLocation = true
         }
     }
@@ -78,34 +86,42 @@ abstract class BaseMapFragment : BaseNavigationFragment(), OnMapReadyCallback {
 
     private suspend fun addMarker(station: StationItem) {
         val stationPosition = LatLng(station.lat, station.lon)
-        val image = withContext(Dispatchers.IO) {
-            Coil.get("https://eco-city.org.ua/img/levels/0-1.png").toBitmap(getMapIconSize(), getMapIconSize())
-        }
+//        val image = withContext(Dispatchers.IO) {
+//            Coil.get("https://eco-city.org.ua/img/levels/0-1.png")
+//                .toBitmap(getMapIconSize(), getMapIconSize())
+//        }
         val options = MarkerOptions()
             .position(stationPosition)
             .title(station.name)
-            .icon(BitmapDescriptorFactory.fromBitmap(image))
+//            .icon(BitmapDescriptorFactory.fromBitmap(image))
         withContext(Dispatchers.Main) {
-            if (::map.isInitialized) map.addMarker(options).tag = station
+            if (::map.isInitialized) {
+                map.addMarker(options)?.let {
+                    it.tag = station
+                }
+            }
         }
     }
 
     private fun setMapStyle() {
         try {
-            val success = map.setMapStyle(MapStyleOptions.loadRawResourceStyle(context, R.raw.map_style))
+            val success =
+                map.setMapStyle(MapStyleOptions.loadRawResourceStyle(requireContext(), R.raw.map_style))
             if (!success) Timber.e("Style parsing failed.")
         } catch (e: Resources.NotFoundException) {
             Timber.e(e)
         }
     }
 
+    @SuppressLint("MissingPermission")
     protected fun setLocationEnabled() {
         if (::map.isInitialized) map.isMyLocationEnabled = true
     }
 
     private fun bitmapDescriptorFromVector(): BitmapDescriptor? {
         context?.run {
-            val vectorDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.ic_location_city)
+            val vectorDrawable =
+                ContextCompat.getDrawable(requireContext(), R.drawable.ic_location_city)
             val possibleBitmap = vectorDrawable?.run {
                 DrawableCompat.wrap(vectorDrawable).mutate()
                 val bitmap = Bitmap.createBitmap(
@@ -117,9 +133,13 @@ abstract class BaseMapFragment : BaseNavigationFragment(), OnMapReadyCallback {
                 vectorDrawable.draw(canvas)
                 bitmap
             }
-            return BitmapDescriptorFactory.fromBitmap(possibleBitmap)
+            possibleBitmap?.let {
+                return BitmapDescriptorFactory.fromBitmap(it)
+            }
+            return null
         } ?: return null
     }
 
-    private fun getMapIconSize(): Int = context?.resources?.getDimensionPixelSize(R.dimen.map_icon_size) ?: 30
+    private fun getMapIconSize(): Int =
+        context?.resources?.getDimensionPixelSize(R.dimen.map_icon_size) ?: 30
 }
