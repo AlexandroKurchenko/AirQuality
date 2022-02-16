@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.math.abs
+import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
 import kotlin.time.hours
 import kotlin.time.toDuration
@@ -42,10 +43,10 @@ fun getNowTime(): Long {
 
 fun Long.diffTimeInMinutes(): Long = TimeUnit.MILLISECONDS.toMinutes(abs(getNowTime() - this))
 
-@UseExperimental(ExperimentalTime::class)
+@OptIn(ExperimentalTime::class)
 fun getTimeFromTimeShift(timeShift: Int, locale: Locale?): String {
-    val timeToDisplay = getNowTime().hours - timeShift.toDuration(TimeUnit.HOURS)
-    return locale.getFormat(DISPLAY_12_HOURS_PATTERN).format(Date(timeToDisplay.toLongMilliseconds()))
+    val timeToDisplay = getNowTime().hours - timeShift.toDuration(DurationUnit.HOURS)
+    return locale.getFormat(DISPLAY_12_HOURS_PATTERN).format(Date(timeToDisplay.inWholeMilliseconds))
 }
 
 private fun Long.diffTimeInDays(): Long = TimeUnit.MILLISECONDS.toDays(abs(getNowTime() - this))

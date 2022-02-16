@@ -12,3 +12,8 @@ data class StationResponse(
     val indor: String,
     val offset: String
 )
+
+data class StationDataWrapperResponse(
+    val stations: List<StationResponse>,
+    val regions: List<Object>//TODO fix
+)

@@ -3,7 +3,7 @@ package com.okurchenko.ecocity.repository
 import android.location.Location
 import com.okurchenko.ecocity.network.StationApi
 import com.okurchenko.ecocity.network.model.StationDataResponse
-import com.okurchenko.ecocity.network.model.StationResponse
+import com.okurchenko.ecocity.network.model.StationDataWrapperResponse
 import com.okurchenko.ecocity.repository.db.DataBaseManager
 import com.okurchenko.ecocity.repository.model.StationDetails
 import com.okurchenko.ecocity.repository.model.StationHistoryItem
@@ -13,6 +13,8 @@ import com.okurchenko.ecocity.ui.main.fragments.stations.StationSort
 import com.okurchenko.ecocity.utils.diffTimeInMinutes
 import com.okurchenko.ecocity.utils.round
 import timber.log.Timber
+
+private const val HARDCODED_KEY = 0.8414709848078965//TODO fix
 
 class StationRepositoryImpl(
     private val api: StationApi,
@@ -35,30 +37,38 @@ class StationRepositoryImpl(
         val stationsToSort = if (isStationsContainsDistance && isLocationSame) {
             stations
         } else {
-            val sortedItems: List<StationItem> = dataBaseManager.updateItemsWithDistance(location, stations)
+            val sortedItems: List<StationItem> =
+                dataBaseManager.updateItemsWithDistance(location, stations)
             preferencesManager.saveCurrentLocation(location)
             sortedItems
         }
         return dataBaseManager.sortAllStations(stationsToSort, StationSort.SortByDistance)
     }
 
-    private fun isItemsDistanceValid(stations: List<StationItem>): Boolean = stations.any { it.distance != 0.0 }
+    private fun isItemsDistanceValid(stations: List<StationItem>): Boolean =
+        stations.any { it.distance != 0.0 }
 
     private suspend fun getAllStations(): List<StationItem> {
         val dbItems = dataBaseManager.getAllStationItems()
         return if (dbItems.isNotEmpty() && preferencesManager.isLastFetchFresh()) {
             dbItems
         } else {
-            val networkResponse = safeApiCall { api.fetchAllStationsAsync().await() }
+            val networkResponse = safeApiCall {
+                api.fetchAllStationsAsync(
+                    key = HARDCODED_KEY,
+                    coords = "{\"south\":47.51453027864857,\"west\":35.007283035156235,\"north\":47.80219799978364,\"east\":35.507160964843735}"
+                ).await()
+            }
             processAllStationsNetworkResponse(networkResponse)
         }
     }
 
-    private fun processAllStationsNetworkResponse(networkResponse: NetworkResult<List<StationResponse>>)
-        : List<StationItem> {
+    private fun processAllStationsNetworkResponse(networkResponse: NetworkResult<StationDataWrapperResponse>)
+            : List<StationItem> {
         when (networkResponse) {
             is NetworkResult.Success -> {
-                val stationItems = StationItemAggregator.convertStationResponseToInstance(networkResponse.data)
+                val stationItems =
+                    StationItemAggregator.convertStationResponseToInstance(networkResponse.data.stations)
                 dataBaseManager.storeNewStationItems(stationItems)
                 preferencesManager.saveAllStationsSyncTime()
                 return stationItems
@@ -70,7 +80,7 @@ class StationRepositoryImpl(
 
     private fun compareLocations(location: Location): Boolean =
         round(location.latitude, 2).toFloat() == preferencesManager.getCurrentLat()
-            && round(location.longitude, 2).toFloat() == preferencesManager.getCurrentLon()
+                && round(location.longitude, 2).toFloat() == preferencesManager.getCurrentLon()
 
 
     override suspend fun fetchHistoryItemsByStationId(
@@ -93,7 +103,13 @@ class StationRepositoryImpl(
         return if (dbHistory != null && dbHistory.timeToSave.diffTimeInMinutes() < REFRESH_TIME) {
             dbHistory
         } else {
-            val networkResponse = safeApiCall { api.fetchStationDataByIdAsync(stationId, timePeriod).await() }
+            val networkResponse = safeApiCall {
+                api.fetchStationDataByIdAsync(
+                    key = HARDCODED_KEY,
+                    stationId,
+                    timePeriod
+                ).await()
+            }
             processHistoryDetailsNetworkResponse(networkResponse, stationId, timePeriod)
         }
     }
@@ -105,7 +121,8 @@ class StationRepositoryImpl(
     ): StationDetails? {
         when (networkResponse) {
             is NetworkResult.Success -> {
-                val stationDetails = DetailsAggregator.prepareStationDetail(networkResponse.data, id, timeShift)
+                val stationDetails =
+                    DetailsAggregator.prepareStationDetail(networkResponse.data, id, timeShift)
                 if (stationDetails != null) {
                     dataBaseManager.saveStationDetailsResult(stationDetails)
                     return stationDetails

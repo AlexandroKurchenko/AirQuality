@@ -47,6 +47,7 @@ class HistoryDetailsActivity : AppCompatActivity(), EventProcessor {
             is NavigationEvents.OpenMainActivity -> openMainScreen()
             is NavigationEvents.OpenDetailsFragment -> openDetailsFragment(event.timeShift)
             is NavigationEvents.OpenHistoryFragment -> openHistoryFragment()
+            else -> {}
         }
     }
 
